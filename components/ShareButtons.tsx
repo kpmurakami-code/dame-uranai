@@ -1,17 +1,20 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { analytics } from "@/lib/analytics";
 
 interface ShareButtonsProps {
   shareCardId: string;         // シェア用 div の id
   tweetText: string;           // X シェア用テキスト
   filename?: string;           // ダウンロード時のファイル名
+  source?: string;             // シェア元の占い種別（"tarot" | "numerology"）
 }
 
 export default function ShareButtons({
   shareCardId,
   tweetText,
   filename = "fortune-result.png",
+  source = "unknown",
 }: ShareButtonsProps) {
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -34,6 +37,7 @@ export default function ShareButtons({
       link.href = dataUrl;
       link.download = filename;
       link.click();
+      analytics.shareClick(source, "image");
     } catch (err) {
       console.error("画像生成エラー:", err);
       alert("画像の生成に失敗しちゃったよ〜💦 もう一度試してね！");
@@ -46,7 +50,8 @@ export default function ShareButtons({
     const encoded = encodeURIComponent(tweetText);
     const url = `https://twitter.com/intent/tweet?text=${encoded}`;
     window.open(url, "_blank", "noopener,noreferrer");
-  }, [tweetText]);
+    analytics.shareClick(source, "x");
+  }, [tweetText, source]);
 
   return (
     <div className="flex flex-col gap-3 mt-4">

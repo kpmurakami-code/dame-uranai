@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
+import { analytics } from "@/lib/analytics";
 
 export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,6 +13,7 @@ export default function AuthPage() {
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setError(null);
+    analytics.loginStart("login_page");
 
     const supabase = createSupabaseBrowserClient();
     const { error } = await supabase.auth.signInWithOAuth({

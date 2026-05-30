@@ -9,6 +9,7 @@ import { getLifePathColor } from "@/lib/numerologyColors";
 import PaywallModal from "@/components/PaywallModal";
 import Header from "@/components/Header";
 import ShareButtons from "@/components/ShareButtons";
+import { analytics } from "@/lib/analytics";
 
 interface NumerologyResult {
   angel: string;
@@ -111,6 +112,8 @@ export default function SujimeiClient() {
       return;
     }
 
+    analytics.numerologyStart();
+
     const lpn = calcLifePathNumber(
       parseInt(year, 10),
       parseInt(month, 10),
@@ -154,6 +157,7 @@ export default function SujimeiClient() {
 
       const data: NumerologyResult = await response.json();
       setResult(data);
+      analytics.numerologyComplete();
       // 履歴保存（ログイン済みのみ）
       const lpnColor = getLifePathColor(lpn);
       saveFortune({
@@ -169,6 +173,7 @@ export default function SujimeiClient() {
     } catch (error) {
       console.error("Numerology error:", error);
       setHasError(true);
+      analytics.numerologyError();
       const fallback: NumerologyResult = {
         angel: `えっと〜、${name}さんのライフパスナンバーは${lpn}なんだよ〜！✨ なんかいいエネルギーを感じるよ〜？今日もきっとうまくいくんじゃないかな〜！（ふわっと）`,
         devil: `ライフパスナンバー${lpn}ね。まあ今日の数字${tn}との組み合わせは…悪くないんじゃないの。ちゃんと行動すれば、あーし的には問題ないと思うけど。`,
@@ -225,6 +230,7 @@ export default function SujimeiClient() {
         <PaywallModal
           onClose={() => setShowPaywall(false)}
           isLoggedIn={isLoggedIn}
+          source="numerology"
         />
       )}
 
@@ -713,6 +719,7 @@ export default function SujimeiClient() {
                   shareCardId="share-card"
                   tweetText={tweetText}
                   filename="numerology-result.png"
+                  source="numerology"
                 />
               </div>
             )}

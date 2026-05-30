@@ -13,6 +13,7 @@ import { saveFortune } from "@/lib/saveFortune";
 import PaywallModal from "@/components/PaywallModal";
 import Header from "@/components/Header";
 import ShareButtons from "@/components/ShareButtons";
+import { analytics } from "@/lib/analytics";
 
 type Step = "select" | "drawing" | "result";
 type SpreadMode = "single" | "three";
@@ -93,9 +94,11 @@ export default function UranaiClient() {
       const text = await response.text();
       result = JSON.parse(text);
       setFortune(result);
+      analytics.fortuneComplete(cards.length === 3 ? "three" : "single", theme);
     } catch (error) {
       console.error("Fortune fetch error:", error);
       setFortuneError(true);
+      analytics.fortuneError(cards.length === 3 ? "three" : "single", theme);
       const mainCard = cards[0];
       result = {
         angel: `えっと〜、「${mainCard.card.nameJa}」のカードが出たよ〜！✨ なんかいいエネルギーを感じるよ〜？きっとうまくいくんじゃないかな〜！`,
@@ -138,6 +141,7 @@ export default function UranaiClient() {
       return;
     }
 
+    analytics.fortuneStart(spreadMode, selectedTheme);
     setStep("drawing");
 
     setTimeout(async () => {
@@ -197,6 +201,7 @@ export default function UranaiClient() {
         <PaywallModal
           onClose={() => setShowPaywall(false)}
           isLoggedIn={isLoggedIn}
+          source="tarot"
         />
       )}
 
@@ -778,6 +783,7 @@ export default function UranaiClient() {
                   shareCardId="share-card"
                   tweetText={tweetText}
                   filename={`tarot-${selectedTheme}.png`}
+                  source="tarot"
                 />
               </div>
             )}

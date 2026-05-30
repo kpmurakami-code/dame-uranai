@@ -2,13 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
+import { analytics } from "@/lib/analytics";
 
 interface PaywallModalProps {
   onClose: () => void;
   isLoggedIn: boolean;
+  source?: string; // どの占いから表示されたか（"tarot" | "numerology"）
 }
 
-export default function PaywallModal({ onClose, isLoggedIn }: PaywallModalProps) {
+export default function PaywallModal({ onClose, isLoggedIn, source = "unknown" }: PaywallModalProps) {
+  useEffect(() => {
+    analytics.paywallShown(source, isLoggedIn);
+  }, [source, isLoggedIn]);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
