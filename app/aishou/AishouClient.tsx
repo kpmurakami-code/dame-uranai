@@ -205,7 +205,6 @@ export default function AishouClient() {
                     fill
                     sizes="120px"
                     className="object-contain float-animation"
-                    priority
                   />
                 </div>
                 <div className="relative w-24 h-24">
@@ -215,7 +214,6 @@ export default function AishouClient() {
                     fill
                     sizes="120px"
                     className="object-contain float-animation-reverse"
-                    priority
                   />
                 </div>
               </div>
