@@ -102,6 +102,17 @@ export default function Home() {
                 >
                   数秘術を試す
                 </Link>
+                <Link
+                  href="/aishou"
+                  className="py-2.5 px-6 rounded-full text-center text-sm font-bold border-2 puni"
+                  style={{
+                    borderColor: "#ff9ec4",
+                    color: "#e91e8c",
+                    background: "rgba(255,255,255,.7)",
+                  }}
+                >
+                  相性占い
+                </Link>
                 <a
                   href="#daily"
                   className="py-2.5 px-6 rounded-full text-center text-sm font-bold border-2 puni"
@@ -240,6 +251,53 @@ export default function Home() {
                   style={{ background: GRAPE, color: "#fff" }}
                 >
                   数秘術を占う
+                </Link>
+              </div>
+            </div>
+
+            {/* 相性占い（バイラルの起点） */}
+            <div
+              className="rounded-[2rem] p-6 sm:p-8 shadow-md flex flex-col sm:flex-row sm:items-center gap-5 mt-6"
+              style={{
+                background: "linear-gradient(150deg,#fff0f6,#ffe1ee)",
+                border: "2px solid #ff9ec4",
+              }}
+            >
+              <Image
+                src="/images/lp/char/pair.png"
+                alt=""
+                width={262}
+                height={262}
+                sizes="112px"
+                className="w-24 h-24 sm:w-28 sm:h-28 object-contain mx-auto sm:mx-0 float-animation"
+              />
+              <div className="flex-1 text-center sm:text-left">
+                <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
+                  <span
+                    className="text-xs font-bold px-3 py-1 rounded-full text-white whitespace-nowrap"
+                    style={{ background: CTA }}
+                  >
+                    NEW
+                  </span>
+                  <h3
+                    className="display text-xl font-black"
+                    style={{ color: "#e91e8c" }}
+                  >
+                    相性占い
+                  </h3>
+                </div>
+                <p
+                  className="text-sm leading-relaxed mb-4"
+                  style={{ color: "#7a6060" }}
+                >
+                  2人の相性、占ってみる？気になるあの人と・友達と。名前だけで気軽に、誕生日を入れるともっと深く。相性スコアが出たら #ダメ占い でシェアして盛り上がろう。
+                </p>
+                <Link
+                  href="/aishou"
+                  className="inline-block py-3 px-8 rounded-full text-base font-extrabold text-white text-center shadow-md puni"
+                  style={{ background: CTA }}
+                >
+                  相性を占う
                 </Link>
               </div>
             </div>

@@ -31,7 +31,14 @@ export const analytics = {
   numerologyComplete: () => emit("numerology_complete", { service: "numerology" }),
   numerologyError: () => emit("numerology_error", { service: "numerology" }),
 
-  // シェア（source: "tarot" | "numerology" / method: "image" | "x"）
+  // 相性占い（無料スコア版・AI呼び出しなし）
+  compatStart: () => emit("compat_start", { service: "compatibility" }),
+  compatComplete: (score: number) =>
+    emit("compat_complete", { service: "compatibility", score }),
+  compatShare: (method: "image" | "x") =>
+    emit("compat_share", { service: "compatibility", method }),
+
+  // シェア（source: "tarot" | "numerology" | "aishou" / method: "image" | "x"）
   shareClick: (source: string, method: "image" | "x") =>
     emit("share_click", { source, method }),
 
