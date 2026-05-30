@@ -275,7 +275,7 @@ export default function UranaiClient() {
                     color: spreadMode === "single" ? "#e91e8c" : "#3d2c2c",
                   }}
                 >
-                  🃏 1枚引き
+                  1枚引き
                   <p className="text-xs font-normal mt-1" style={{ color: "#7a6060" }}>
                     今この瞬間を占う
                   </p>
@@ -293,7 +293,7 @@ export default function UranaiClient() {
                     color: spreadMode === "three" ? "#e91e8c" : "#3d2c2c",
                   }}
                 >
-                  🃏🃏🃏 3枚展開
+                  3枚展開
                   <p className="text-xs font-normal mt-1" style={{ color: "#7a6060" }}>
                     過去・現在・未来
                   </p>
@@ -363,7 +363,7 @@ export default function UranaiClient() {
                   : "#ccc",
               }}
             >
-              🃏 カードを引く！
+              カードを引く！
             </button>
           </div>
         )}
@@ -788,7 +788,7 @@ export default function UranaiClient() {
                   background: "linear-gradient(135deg, #ff6b9d, #c64dd1)",
                 }}
               >
-                🔮 もう一度占う
+                もう一度占う
               </button>
               <Link
                 href="/"

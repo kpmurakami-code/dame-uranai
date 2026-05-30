@@ -85,7 +85,7 @@ export default function Home() {
               background: "linear-gradient(135deg, #ff6b9d, #c64dd1)",
             }}
           >
-            🔮 タロット占いをする
+            タロット占いをする
           </Link>
           <Link
             href="/sujimei"
@@ -95,7 +95,7 @@ export default function Home() {
               color: "#ffffff",
             }}
           >
-            🔢 数秘術占いも試してみる
+            数秘術占いも試してみる
           </Link>
           <p className="text-xs mt-3" style={{ color: "#b08090" }}>
             ✦ 無料で3回体験できるよ ✦
@@ -261,7 +261,7 @@ export default function Home() {
               background: "linear-gradient(135deg, #ff6b9d, #c64dd1)",
             }}
           >
-            🔮 タロット占いをする！
+            タロット占いをする！
           </Link>
           <Link
             href="/sujimei"
@@ -270,7 +270,7 @@ export default function Home() {
               background: "linear-gradient(135deg, #a78bfa, #7c3aed)",
             }}
           >
-            🔢 数秘術占いをする！
+            数秘術占いをする！
           </Link>
         </div>
       </section>

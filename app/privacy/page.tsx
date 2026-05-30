@@ -84,9 +84,9 @@ export default function PrivacyPage() {
           </Section>
 
           <Section title="8. お問い合わせ">
-            運営者：【運営者名を記載してください】
+            運営者：ダメ占い管理人
             <br />
-            お問い合わせ：【問い合わせ先メールアドレスを記載してください】
+            お問い合わせ：dameuranai@gmail.com
           </Section>
         </div>
 

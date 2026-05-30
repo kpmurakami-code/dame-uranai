@@ -432,14 +432,14 @@ export default function HistoryClient({ fortunes }: Props) {
                   className="block w-full py-4 px-8 rounded-full text-white text-base font-bold text-center shadow-lg transition-all duration-200 hover:scale-105"
                   style={{ background: "linear-gradient(135deg, #ff6b9d, #c64dd1)" }}
                 >
-                  🃏 タロット占いへ
+                  タロット占いへ
                 </Link>
                 <Link
                   href="/sujimei"
                   className="block w-full py-3 px-8 rounded-full text-center text-sm font-medium border-2 transition-all duration-200"
                   style={{ borderColor: "#fce4ec", color: "#c2185b", background: "#ffffff" }}
                 >
-                  🔢 数秘術占いへ
+                  数秘術占いへ
                 </Link>
               </div>
             </div>
@@ -457,7 +457,7 @@ export default function HistoryClient({ fortunes }: Props) {
                   className="block w-full py-4 px-8 rounded-full text-white text-base font-bold text-center shadow-lg transition-all duration-200 hover:scale-105"
                   style={{ background: "linear-gradient(135deg, #ff6b9d, #c64dd1)" }}
                 >
-                  🔮 新しく占う
+                  新しく占う
                 </Link>
               </div>
             </>

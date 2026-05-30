@@ -58,7 +58,7 @@ export default function ShareButtons({
           background: "linear-gradient(135deg, #ff6b9d, #c64dd1)",
         }}
       >
-        {isGenerating ? "⏳ 画像生成中..." : "📸 シェア用画像を保存"}
+        {isGenerating ? "画像生成中..." : "シェア用画像を保存"}
       </button>
 
       <button
@@ -68,7 +68,7 @@ export default function ShareButtons({
           background: "linear-gradient(135deg, #1a8cd8, #1a6fa8)",
         }}
       >
-        𝕏 Xでシェアする
+        Xでシェアする
       </button>
     </div>
   );

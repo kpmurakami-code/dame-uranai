@@ -393,7 +393,7 @@ export default function SujimeiClient() {
                   : "#ccc",
               }}
             >
-              🔢 数秘術で占う！
+              数秘術で占う！
             </button>
           </div>
         )}
@@ -726,7 +726,7 @@ export default function SujimeiClient() {
                   background: "linear-gradient(135deg, #ff6b9d, #c64dd1)",
                 }}
               >
-                🔢 もう一度占う
+                もう一度占う
               </button>
               <Link
                 href="/uranai"
@@ -737,7 +737,7 @@ export default function SujimeiClient() {
                   background: "#ffffff",
                 }}
               >
-                🃏 タロット占いもやってみる
+                タロット占いもやってみる
               </Link>
               <Link
                 href="/"

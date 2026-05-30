@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/images/og.png",
-        width: 1200,
-        height: 630,
+        width: 1731,
+        height: 909,
         alt: "ダメ占い - ダメ天使＆ダメ悪魔の本音占い",
       },
     ],
