@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     const client = new Anthropic({ apiKey });
 
-    const userPrompt = `名前：${name}
+    let userPrompt = `名前：${name}
 生年月日：${birthdate}
 ライフパスナンバー：${lifePathNumber}
 今日の数字：${todayNumber}
@@ -55,6 +55,12 @@ export async function POST(request: Request) {
 この数秘術の結果について、ダメ天使とダメ悪魔の掛け合い形式でお願いします。
 ライフパスナンバー${lifePathNumber}の性格特性と、今日の数字${todayNumber}との組み合わせから今日の運勢を教えてください。
 必ずJSON形式のみで回答してください。`;
+
+    // 鏡像演出：ごくまれ（約20%）に「ダメ天使の直感が偶然当たる回」を発動。
+    if (Math.random() < 0.2) {
+      userPrompt +=
+        "\n\n【今回の特別演出（まれ）】今回はダメ天使の直感が“偶然”ズバリ当たる回。天使の一見的外れな見方が、実は核心を突いている（本人は無自覚）。ダメ悪魔は思わず驚き、悔しがる。最後は2人で本音の答えにまとめること。";
+    }
 
     // ストリーミングせずに通常のAPIで取得
     const response = await client.messages.create({

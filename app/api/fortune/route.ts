@@ -100,7 +100,13 @@ export async function POST(request: Request) {
     const modeDescription = getModeDescription(characterMode);
     const isThree = Array.isArray(cards) && cards.length === 3;
 
-    const userPrompt = buildUserPrompt(themeLabel, cardsDescription, modeDescription, isThree);
+    let userPrompt = buildUserPrompt(themeLabel, cardsDescription, modeDescription, isThree);
+    // 鏡像演出：ごくまれ（約20%）に「ダメ天使の直感が偶然当たる回」を発動。
+    // 基本は天使＝的外れ／悪魔＝精度のままだが、たまに天使がズバリ当て、悪魔が驚く。
+    if (Math.random() < 0.2) {
+      userPrompt +=
+        "\n\n【今回の特別演出（まれ）】今回はダメ天使の直感が“偶然”ズバリ当たる回。天使の一見的外れな見方が、実は核心を突いている（本人は分析ではなく「なんとなく」で当てており無自覚）。ダメ悪魔は思わず驚き、悔しがる（例：「…っ、なんで今日に限って当たってんのよ」）。それでも最後は2人で本音の答えにまとめること。";
+    }
     const maxTokens = isThree ? 1600 : 1024;
 
     // ストリーミングレスポンスを使用
