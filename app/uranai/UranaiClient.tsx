@@ -460,6 +460,7 @@ export default function UranaiClient() {
                       src={`/images/characters/${drawnCards[0].card.filename}`}
                       alt={drawnCards[0].card.nameJa}
                       fill
+                      sizes="144px"
                       className="object-contain"
                       style={{
                         transform: drawnCards[0].isReversed ? "rotate(180deg)" : "none",
@@ -522,7 +523,7 @@ export default function UranaiClient() {
                 <>
                   <div className="flex items-start gap-2 mb-3">
                     <div className="relative w-8 h-8 flex-shrink-0">
-                      <Image src="/images/characters/24_ANGEL.png" alt="ダメ天使" fill className="object-contain" />
+                      <Image src="/images/characters/24_ANGEL.png" alt="ダメ天使" fill sizes="32px" className="object-contain" />
                     </div>
                     <div
                       className="flex-1 rounded-2xl rounded-tl-sm px-3 py-2 text-xs leading-relaxed"
@@ -533,7 +534,7 @@ export default function UranaiClient() {
                   </div>
                   <div className="flex items-start gap-2 flex-row-reverse mb-3">
                     <div className="relative w-8 h-8 flex-shrink-0">
-                      <Image src="/images/characters/25_DEVIL.png" alt="ダメ悪魔" fill className="object-contain" />
+                      <Image src="/images/characters/25_DEVIL.png" alt="ダメ悪魔" fill sizes="32px" className="object-contain" />
                     </div>
                     <div
                       className="flex-1 rounded-2xl rounded-tr-sm px-3 py-2 text-xs leading-relaxed"
@@ -690,6 +691,7 @@ export default function UranaiClient() {
                         src="/images/characters/24_ANGEL.png"
                         alt="ダメ天使"
                         fill
+                        sizes="48px"
                         className="object-contain"
                       />
                     </div>
@@ -715,6 +717,7 @@ export default function UranaiClient() {
                         src="/images/characters/25_DEVIL.png"
                         alt="ダメ悪魔"
                         fill
+                        sizes="48px"
                         className="object-contain"
                       />
                     </div>
