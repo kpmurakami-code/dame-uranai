@@ -27,8 +27,22 @@ interface DrawnCard {
 interface FortuneResult {
   angel: string;
   devil: string;
-  summary: string;
+  /** v2.4 厚めの結論。旧データは未設定の場合あり */
+  verdict?: string;
+  /** v2.4 行動の一言アドバイス */
+  advice?: string;
+  /** 旧スキーマ（後方互換）。verdict が無い場合のフォールバック表示に使う */
+  summary?: string;
+  /** 3枚引きのみ：位置別読み解き */
+  cards?: { position: string; reading: string }[];
+  /** 3枚引きのみ：流れのまとめ */
+  flow?: string;
   luckyColor?: { name: string; hex: string };
+}
+
+/** verdict 優先、無ければ summary にフォールバック（旧データ・API失敗対策） */
+function getVerdict(f: FortuneResult): string {
+  return f.verdict || f.summary || "";
 }
 
 
@@ -100,32 +114,52 @@ export default function UranaiClient() {
       setFortuneError(true);
       analytics.fortuneError(cards.length === 3 ? "three" : "single", theme);
       const mainCard = cards[0];
+      const isThree = cards.length === 3;
       result = {
         angel: `えっと〜、「${mainCard.card.nameJa}」のカードが出たよ〜！✨ なんかいいエネルギーを感じるよ〜？きっとうまくいくんじゃないかな〜！`,
         devil: `まあ、「${mainCard.card.nameJa}」が出たってことは、ちゃんと前向きに動くべきってことじゃないの。…まあ、応援はしてるけど。`,
-        summary: `行動するタイミングが来ています。自信を持って前進することで嬉しい変化が訪れるでしょう。`,
+        verdict: `今こそ自信を持って前に進んでいいタイミングだよ。流れはあなたの味方。ためらわずに一歩を踏み出せば、嬉しい変化がちゃんとついてくる。完璧を目指さなくていいから、まずは「やってみる」気持ちを大事にして。その素直さが、いい結果を引き寄せてくれるはず。`,
+        advice: `気になっていたことに、今日のうちに小さく一歩だけ行動を起こしてみて。`,
+        ...(isThree
+          ? {
+              cards: cards.map((c) => ({
+                position: c.position ?? "",
+                reading: `${c.position ?? ""}を表す「${c.card.nameJa}」。この流れを受け止めてみてね。`,
+              })),
+              flow: `過去から今へ、そして未来へ。少しずつ良い方向に動いていく流れだよ。`,
+            }
+          : {}),
       };
       setFortune(result);
     } finally {
       setIsLoadingFortune(false);
       setStep("result");
       // ログイン済みの場合のみ履歴保存（result は上で確定済み）
+      const savedResult = result!;
       saveFortune({
         fortune_type: "tarot",
         theme,
-        angel_text: result!.angel,
-        devil_text: result!.devil,
-        summary_text: result!.summary,
+        angel_text: savedResult.angel,
+        devil_text: savedResult.devil,
+        // v2.4: 結論(verdict)を summary_text に保存（履歴に結論が残る）
+        summary_text: getVerdict(savedResult),
+        advice: savedResult.advice,
+        flow: savedResult.flow,
         card_names: cards.map((c) => c.card.nameJa),
-        card_data: cards.map((c): CardData => ({
-          nameJa: c.card.nameJa,
-          filename: c.card.filename,
-          isReversed: c.isReversed,
-          position: c.position ?? null,
-          keyword: c.isReversed ? c.card.keywordReversed : c.card.keywordUpright,
-        })),
-        lucky_color_name: result!.luckyColor?.name,
-        lucky_color_hex: result!.luckyColor?.hex,
+        card_data: cards.map((c): CardData => {
+          // 位置別 reading を該当カードに付与（3枚引きのみ AI が返す）
+          const reading = savedResult.cards?.find((rc) => rc.position === c.position)?.reading;
+          return {
+            nameJa: c.card.nameJa,
+            filename: c.card.filename,
+            isReversed: c.isReversed,
+            position: c.position ?? null,
+            keyword: c.isReversed ? c.card.keywordReversed : c.card.keywordUpright,
+            ...(reading ? { reading } : {}),
+          };
+        }),
+        lucky_color_name: savedResult.luckyColor?.name,
+        lucky_color_hex: savedResult.luckyColor?.hex,
       }).catch(console.error);
     }
   }, []);
@@ -183,9 +217,9 @@ export default function UranaiClient() {
   const selectedThemeLabel =
     themes.find((t) => t.id === selectedTheme)?.label ?? "";
 
-  // X シェア用テキスト
+  // X シェア用テキスト（結論 verdict を要約）
   const tweetText = fortune
-    ? `【タロット占い】${selectedThemeLabel}｜${fortune.summary.slice(0, 40)}… #ダメ占い`
+    ? `【タロット占い】${selectedThemeLabel}｜${getVerdict(fortune).slice(0, 40)}… #ダメ占い`
     : "";
 
   return (
@@ -550,10 +584,16 @@ export default function UranaiClient() {
                   </div>
                   <div
                     className="rounded-xl p-3 text-center"
-                    style={{ background: "rgba(255,255,255,0.6)" }}
+                    style={{ background: "rgba(255,255,255,0.7)" }}
                   >
-                    <p className="text-xs leading-relaxed" style={{ color: "#3d2c2c" }}>
-                      {fortune.summary}
+                    <p className="text-xs font-bold mb-1" style={{ color: "#c2185b" }}>
+                      💡 2人の結論
+                    </p>
+                    <p className="text-xs leading-relaxed font-medium" style={{ color: "#3d2c2c" }}>
+                      {(() => {
+                        const v = getVerdict(fortune);
+                        return v.length > 120 ? v.slice(0, 120) + "…" : v;
+                      })()}
                     </p>
                   </div>
                   {fortune.luckyColor && (
@@ -685,6 +725,44 @@ export default function UranaiClient() {
               </div>
             )}
 
+            {/* === カードの流れ（3枚引きのみ・位置別読み解き＋flow） === */}
+            {spreadMode === "three" && fortune && !isLoadingFortune && fortune.cards && fortune.cards.length > 0 && (
+              <div
+                className="rounded-2xl p-4 mb-6"
+                style={{ background: "linear-gradient(135deg, #f6f0ff, #fff0f5)", border: "1.5px solid #e8d5ff" }}
+              >
+                <p className="text-sm font-bold mb-3 text-center" style={{ color: "#6a1b9a" }}>
+                  🔮 カードの流れ
+                </p>
+                <div className="space-y-2.5">
+                  {fortune.cards.map((c, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <span
+                        className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded-full mt-0.5"
+                        style={{ background: "#e8d5ff", color: "#6a1b9a", minWidth: "40px", textAlign: "center" }}
+                      >
+                        {c.position}
+                      </span>
+                      <p className="flex-1 text-sm leading-relaxed" style={{ color: "#3d2c2c" }}>
+                        {c.reading}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                {fortune.flow && (
+                  <div
+                    className="rounded-xl px-3 py-2.5 mt-3 text-center"
+                    style={{ background: "rgba(255,255,255,0.7)" }}
+                  >
+                    <p className="text-xs font-bold mb-0.5" style={{ color: "#888" }}>過去 → 現在 → 未来</p>
+                    <p className="text-sm leading-relaxed font-medium" style={{ color: "#3d2c2c" }}>
+                      {fortune.flow}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* === AIセリフ全文表示エリア === */}
             {fortune && !isLoadingFortune && (
               <div className="mb-6">
@@ -740,17 +818,37 @@ export default function UranaiClient() {
                   </div>
                 </div>
 
-                {/* まとめ */}
+                {/* 💡 2人の結論（視覚的な主役・強調表示） */}
                 <div
-                  className="rounded-2xl p-4 text-center"
-                  style={{ background: "linear-gradient(135deg, #fff0f5, #f0e8ff)" }}
+                  className="rounded-3xl p-5"
+                  style={{
+                    background: "linear-gradient(135deg, #fff4d6, #ffe0ec)",
+                    border: "2.5px solid #ffb7c5",
+                    boxShadow: "0 10px 32px rgba(255,107,157,0.28)",
+                  }}
                 >
-                  <p className="text-xs font-bold mb-2" style={{ color: "#888" }}>
-                    ✦ 2人のまとめ ✦
+                  <div className="flex items-center justify-center gap-2 mb-3">
+                    <span className="text-xl">💡</span>
+                    <p className="text-base font-bold" style={{ color: "#c2185b" }}>
+                      2人の結論
+                    </p>
+                  </div>
+                  <p className="text-base leading-relaxed font-medium text-center" style={{ color: "#3d2c2c" }}>
+                    {getVerdict(fortune)}
                   </p>
-                  <p className="text-sm leading-relaxed font-medium" style={{ color: "#3d2c2c" }}>
-                    {fortune.summary}
-                  </p>
+                  {fortune.advice && (
+                    <div
+                      className="rounded-2xl px-4 py-3 mt-4 flex items-start gap-2"
+                      style={{ background: "rgba(255,255,255,0.75)" }}
+                    >
+                      <span className="flex-shrink-0 text-sm font-bold" style={{ color: "#e91e8c" }}>
+                        → こうしてみて
+                      </span>
+                      <p className="flex-1 text-sm leading-relaxed font-medium" style={{ color: "#3d2c2c" }}>
+                        {fortune.advice}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* 今日のラッキーカラー */}

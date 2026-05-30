@@ -12,7 +12,12 @@ interface CardData {
   isReversed: boolean;
   position: string | null;
   keyword: string;
+  /** v2.4 3枚引きの位置別読み解き（旧データは無し） */
+  reading?: string;
 }
+
+/** v2.4 で card_data は { cards, advice, flow } オブジェクトに。旧データは配列。 */
+type StoredCardData = CardData[] | { cards: CardData[]; advice?: string | null; flow?: string | null };
 
 interface Fortune {
   id: string;
@@ -22,12 +27,27 @@ interface Fortune {
   devil_text: string;
   summary_text: string;
   card_names: string[] | null;
-  card_data: CardData[] | null;
+  card_data: StoredCardData | null;
   lucky_color_name: string | null;
   lucky_color_hex: string | null;
   life_path_number: number | null;
   life_path_meaning: string | null;
   created_at: string;
+}
+
+/** card_data を正規化：旧（配列）・新（{cards, advice, flow}）両対応 */
+function normalizeCardData(raw: StoredCardData | null): {
+  cards: CardData[];
+  advice: string | null;
+  flow: string | null;
+} {
+  if (!raw) return { cards: [], advice: null, flow: null };
+  if (Array.isArray(raw)) return { cards: raw, advice: null, flow: null };
+  return {
+    cards: Array.isArray(raw.cards) ? raw.cards : [],
+    advice: raw.advice ?? null,
+    flow: raw.flow ?? null,
+  };
 }
 
 interface Props {
@@ -73,6 +93,7 @@ function FortuneItem({ fortune }: { fortune: Fortune }) {
   const themeLabel = fortune.theme ? (THEME_LABELS[fortune.theme] ?? fortune.theme) : null;
   const myColor = fortune.life_path_number !== null ? getLifePathColor(fortune.life_path_number) : null;
   const todayNumber = getTodayNumberFromISO(fortune.created_at);
+  const { cards: cardList, advice, flow } = normalizeCardData(fortune.card_data);
 
   return (
     <div
@@ -141,9 +162,9 @@ function FortuneItem({ fortune }: { fortune: Fortune }) {
         <div className="px-4 pb-5 pt-2" style={{ background: "#fffbfd" }}>
 
           {/* ===== タロット：カード表示 ===== */}
-          {fortune.fortune_type === "tarot" && fortune.card_data && fortune.card_data.length > 0 && (
+          {fortune.fortune_type === "tarot" && cardList.length > 0 && (
             <div className="mb-5">
-              {fortune.card_data.length === 1 ? (
+              {cardList.length === 1 ? (
                 /* 1枚引き */
                 <div className="text-center">
                   <div className="inline-block relative">
@@ -161,20 +182,20 @@ function FortuneItem({ fortune }: { fortune: Fortune }) {
                         style={{ width: "120px", aspectRatio: "2/3" }}
                       >
                         <Image
-                          src={`/images/characters/${fortune.card_data[0].filename}`}
-                          alt={fortune.card_data[0].nameJa}
+                          src={`/images/characters/${cardList[0].filename}`}
+                          alt={cardList[0].nameJa}
                           fill
                           sizes="140px"
                           className="object-contain"
-                          style={{ transform: fortune.card_data[0].isReversed ? "rotate(180deg)" : "none" }}
+                          style={{ transform: cardList[0].isReversed ? "rotate(180deg)" : "none" }}
                         />
                       </div>
                     </div>
                   </div>
                   <div className="mt-3">
                     <p className="text-base font-bold" style={{ color: "#3d2c2c" }}>
-                      {fortune.card_data[0].nameJa}
-                      {fortune.card_data[0].isReversed && (
+                      {cardList[0].nameJa}
+                      {cardList[0].isReversed && (
                         <span
                           className="text-xs ml-2 px-2 py-0.5 rounded-full align-middle"
                           style={{ background: "#e8d5ff", color: "#6a1b9a" }}
@@ -187,14 +208,14 @@ function FortuneItem({ fortune }: { fortune: Fortune }) {
                       className="inline-block mt-1 px-3 py-1 rounded-full text-xs"
                       style={{ background: "linear-gradient(135deg, #fff0f5, #f0e8ff)", color: "#e91e8c", border: "1px solid #fce4ec" }}
                     >
-                      ✦ {fortune.card_data[0].keyword}
+                      ✦ {cardList[0].keyword}
                     </div>
                   </div>
                 </div>
               ) : (
                 /* 3枚展開 */
                 <div className="grid grid-cols-3 gap-2">
-                  {fortune.card_data.map((card, i) => (
+                  {cardList.map((card, i) => (
                     <div key={i} className="text-center">
                       {card.position && (
                         <div
@@ -246,8 +267,47 @@ function FortuneItem({ fortune }: { fortune: Fortune }) {
             </div>
           )}
 
+          {/* ===== タロット：カードの流れ（3枚引きで reading がある新データのみ） ===== */}
+          {fortune.fortune_type === "tarot" &&
+            cardList.length === 3 &&
+            cardList.some((c) => c.reading) && (
+              <div
+                className="rounded-2xl p-4 mb-4"
+                style={{ background: "linear-gradient(135deg, #f6f0ff, #fff0f5)", border: "1.5px solid #e8d5ff" }}
+              >
+                <p className="text-sm font-bold mb-3 text-center" style={{ color: "#6a1b9a" }}>
+                  🔮 カードの流れ
+                </p>
+                <div className="space-y-2.5">
+                  {cardList.map((c, i) =>
+                    c.reading ? (
+                      <div key={i} className="flex items-start gap-2">
+                        <span
+                          className="flex-shrink-0 text-xs font-bold px-2 py-1 rounded-full mt-0.5"
+                          style={{ background: "#e8d5ff", color: "#6a1b9a", minWidth: "40px", textAlign: "center" }}
+                        >
+                          {c.position}
+                        </span>
+                        <p className="flex-1 text-sm leading-relaxed" style={{ color: "#3d2c2c" }}>
+                          {c.reading}
+                        </p>
+                      </div>
+                    ) : null
+                  )}
+                </div>
+                {flow && (
+                  <div className="rounded-xl px-3 py-2.5 mt-3 text-center" style={{ background: "rgba(255,255,255,0.7)" }}>
+                    <p className="text-xs font-bold mb-0.5" style={{ color: "#888" }}>過去 → 現在 → 未来</p>
+                    <p className="text-sm leading-relaxed font-medium" style={{ color: "#3d2c2c" }}>
+                      {flow}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
           {/* カード名のみ保存（旧データ用フォールバック） */}
-          {fortune.fortune_type === "tarot" && !fortune.card_data && fortune.card_names && fortune.card_names.length > 0 && (
+          {fortune.fortune_type === "tarot" && cardList.length === 0 && fortune.card_names && fortune.card_names.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-1">
               {fortune.card_names.map((name, i) => (
                 <span
@@ -356,16 +416,48 @@ function FortuneItem({ fortune }: { fortune: Fortune }) {
             </div>
           </div>
 
-          {/* ===== まとめ ===== */}
-          <div
-            className="rounded-2xl px-4 py-3 text-center"
-            style={{ background: "linear-gradient(135deg, #fff0f5, #f0e8ff)" }}
-          >
-            <p className="text-xs font-bold mb-1" style={{ color: "#888" }}>✦ 2人のまとめ ✦</p>
-            <p className="text-sm leading-relaxed" style={{ color: "#3d2c2c" }}>
-              {fortune.summary_text}
-            </p>
-          </div>
+          {/* ===== 結論（タロット：verdict）／まとめ（数秘術） ===== */}
+          {fortune.fortune_type === "tarot" ? (
+            <div
+              className="rounded-3xl p-5"
+              style={{
+                background: "linear-gradient(135deg, #fff4d6, #ffe0ec)",
+                border: "2.5px solid #ffb7c5",
+                boxShadow: "0 8px 24px rgba(255,107,157,0.22)",
+              }}
+            >
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="text-lg">💡</span>
+                <p className="text-sm font-bold" style={{ color: "#c2185b" }}>2人の結論</p>
+              </div>
+              <p className="text-sm leading-relaxed font-medium text-center" style={{ color: "#3d2c2c" }}>
+                {fortune.summary_text}
+              </p>
+              {advice && (
+                <div
+                  className="rounded-2xl px-4 py-3 mt-3 flex items-start gap-2"
+                  style={{ background: "rgba(255,255,255,0.75)" }}
+                >
+                  <span className="flex-shrink-0 text-xs font-bold" style={{ color: "#e91e8c" }}>
+                    → こうしてみて
+                  </span>
+                  <p className="flex-1 text-sm leading-relaxed font-medium" style={{ color: "#3d2c2c" }}>
+                    {advice}
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div
+              className="rounded-2xl px-4 py-3 text-center"
+              style={{ background: "linear-gradient(135deg, #fff0f5, #f0e8ff)" }}
+            >
+              <p className="text-xs font-bold mb-1" style={{ color: "#888" }}>✦ 2人のまとめ ✦</p>
+              <p className="text-sm leading-relaxed" style={{ color: "#3d2c2c" }}>
+                {fortune.summary_text}
+              </p>
+            </div>
+          )}
 
           {/* ===== タロット：ラッキーカラー ===== */}
           {fortune.fortune_type === "tarot" && fortune.lucky_color_name && fortune.lucky_color_hex && (

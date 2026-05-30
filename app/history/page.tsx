@@ -29,8 +29,11 @@ export default async function HistoryPage() {
   const normalized = (fortunes ?? []).map((f) => ({
     ...f,
     card_names: typeof f.card_names === "string" ? JSON.parse(f.card_names) : (f.card_names as string[] | null),
-    card_data: typeof f.card_data === "string" ? JSON.parse(f.card_data) : (f.card_data as unknown[] | null),
+    // card_data は旧データ＝配列／新データ(v2.4)＝{cards,advice,flow} オブジェクト。
+    // 解析だけ行い、形状の正規化はクライアント側 normalizeCardData が両対応する。
+    card_data: typeof f.card_data === "string" ? JSON.parse(f.card_data) : f.card_data,
   }));
 
-  return <HistoryClient fortunes={normalized} />;
+  // 型は HistoryClient 側の Fortune に委ねる（card_data は両形状あり得るため）
+  return <HistoryClient fortunes={normalized as never} />;
 }

@@ -8,6 +8,8 @@ export interface CardData {
   isReversed: boolean;
   position: string | null;
   keyword: string;
+  /** v2.4 3枚引きの位置別読み解き（jsonbなので列追加不要）。旧データは無し */
+  reading?: string;
 }
 
 interface SaveFortuneParams {
@@ -15,7 +17,12 @@ interface SaveFortuneParams {
   theme?: string;
   angel_text: string;
   devil_text: string;
+  /** タロットでは verdict（厚めの結論）を保存する */
   summary_text: string;
+  /** v2.4 行動アドバイス。card_data に内包して保存（列追加なし） */
+  advice?: string;
+  /** v2.4 3枚引きの流れまとめ。card_data に内包して保存（列追加なし） */
+  flow?: string;
   card_names?: string[];
   card_data?: CardData[];
   lucky_color_name?: string;
@@ -42,7 +49,15 @@ export async function saveFortune(params: SaveFortuneParams): Promise<void> {
     devil_text: params.devil_text,
     summary_text: params.summary_text,
     card_names: params.card_names ? JSON.stringify(params.card_names) : null,
-    card_data: params.card_data ? JSON.stringify(params.card_data) : null,
+    // v2.4: card_data(jsonb) に cards 配列＋advice/flow を内包して保存（列追加不要）。
+    // 旧データは配列形式のため、読み出し側で両対応する。
+    card_data: params.card_data
+      ? JSON.stringify({
+          cards: params.card_data,
+          advice: params.advice ?? null,
+          flow: params.flow ?? null,
+        })
+      : null,
     lucky_color_name: params.lucky_color_name ?? null,
     lucky_color_hex: params.lucky_color_hex ?? null,
     life_path_number: params.life_path_number ?? null,
