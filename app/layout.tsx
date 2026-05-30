@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-// 本番URL。Vercelデプロイ後に環境変数 NEXT_PUBLIC_SITE_URL を本番ドメインに設定する。
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dame-uranai.vercel.app";
+// 本番URL。Vercelの環境変数 NEXT_PUBLIC_SITE_URL を本番ドメインに設定する（未設定時は下記を使用）。
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dame-uranai.com";
 const siteName = "ダメ占い";
 const title = "ダメ占い｜ダメ天使＆ダメ悪魔の本音占い";
 const description =

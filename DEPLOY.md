@@ -15,7 +15,7 @@
 | `ANTHROPIC_API_KEY` | AI占いの生成 | https://console.anthropic.com |
 | `NEXT_PUBLIC_SUPABASE_URL` | 認証・占い履歴 | Supabase → Project Settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 認証・占い履歴 | Supabase → Project Settings → API |
-| `NEXT_PUBLIC_SITE_URL` | OGP画像の絶対URL | デプロイ後の本番ドメイン（例 `https://dame-uranai.vercel.app`） |
+| `NEXT_PUBLIC_SITE_URL` | OGP画像の絶対URL | 本番の正規ドメイン `https://dame-uranai.com`（独自ドメイン取得前は仮の `*.vercel.app`） |
 
 ## 2. デプロイ（GitHub + Vercel 連携・推奨）
 
@@ -31,7 +31,7 @@
 
 1. Vercel の環境変数 `NEXT_PUBLIC_SITE_URL` を**本番URLに更新** → 再デプロイ
 2. **Supabase** → Authentication → URL Configuration
-   - **Site URL**: 本番URL（例 `https://dame-uranai.vercel.app`）
+   - **Site URL**: 本番の正規ドメイン（例 `https://dame-uranai.com`）
    - **Redirect URLs** に追加: `https://（本番ドメイン）/auth/callback`
    - ※ ローカル開発用の `http://localhost:3000/auth/callback` も残しておくと両方で動作
 3. **Google Cloud Console** の OAuth リダイレクトURIは Supabase の
