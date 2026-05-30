@@ -292,7 +292,7 @@ export default function Home() {
                   className="text-sm leading-relaxed"
                   style={{ color: "#7a6060" }}
                 >
-                  ほめ上手なダメ天使と、毒舌なダメ悪魔。2人のぬけてるやりとりで、占い結果がくすっと笑えるエンタメになるよ。
+                  善意なのにズレる天使と、毒舌なのに当てる悪魔。ちぐはぐな2人の掛け合いで、くすっと笑えて、なぜかちゃんと当たる。
                 </p>
               </div>
 
@@ -459,7 +459,7 @@ export default function Home() {
                     style={{ color: "#7a6060" }}
                   >
                     <b style={{ color: "#c2185b" }}>ふわっと天使は、</b>
-                    どんなカードも良い方へ。今のあなたを、まるごとやさしく肯定してくれる。
+                    どんなカードも良い方へ。やさしく肯定してくれて、まれに直感がズバリ当たってびっくり。
                   </p>
                 </div>
                 <div
@@ -479,7 +479,7 @@ export default function Home() {
                     style={{ color: "#7a6060" }}
                   >
                     <b style={{ color: "#6a1b9a" }}>ズバッと悪魔は、</b>
-                    本音で核心をひとつき。でも最後には、ちゃんと小さなエールを添えてくれる。
+                    悪態のつもりが、なぜか的確。本音で核心を突いて、結局あなたの役に立ってしまう。
                   </p>
                 </div>
                 <div
@@ -515,7 +515,7 @@ export default function Home() {
                 占い師は、ぬけてる相棒2人組
               </h2>
               <p className="text-sm font-medium" style={{ color: "#7a6060" }}>
-                ダメ天使とダメ悪魔がいつも2人セットで、あなたの占いをお届け。
+                善意で外す天使と、悪態で当てる悪魔。凸凹な2人セットで、あなたの占いをお届け。
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -550,7 +550,7 @@ export default function Home() {
                   className="text-sm leading-relaxed"
                   style={{ color: "#7a6060" }}
                 >
-                  ポジティブ寄りの占い師。どんな結果も良い方へ読もうとする、ふわっと優しい天然さん。ときどき的外れだけど、いつも本気で応援してくれるよ。
+                  善意だけは一流の、ふわっと天然な占い師。どんな結果も良い方へ読もうとして、ときどき的外れ。でも本気で応援してくれて、まれに直感がズバリ当たって悪魔をびっくりさせる。
                 </p>
               </div>
 
@@ -585,7 +585,7 @@ export default function Home() {
                   className="text-sm leading-relaxed"
                   style={{ color: "#7a6060" }}
                 >
-                  辛口リアリストの占い師。本音でズバッと課題を指摘するけど、最後にはちゃんと小さなエールを添えてくれる。実はかなり面倒見がいいよ。
+                  悪ぶってるのに、なぜか役に立ってしまう占い師。毒舌でズバッと核心を突くけど、中身はいつもあなたのため。役立っちゃった自分に、ちょっと不服そう（ツンデレ）。
                 </p>
               </div>
             </div>
