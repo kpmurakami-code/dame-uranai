@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { unstable_cache } from "next/cache";
 import { type NextRequest } from "next/server";
 
 // キャラクター設定（プロンプトキャッシング用）
@@ -95,6 +96,68 @@ function getDateHash(dateStr: string): number {
   return hash;
 }
 
+// AI生成本体：指定日付のひとことを1回だけ生成する。
+// 失敗時（APIキー未設定・API エラー・JSON不正）は例外を投げる
+// → unstable_cache は例外をキャッシュしないので、フォールバックが固定化されない。
+async function generateDailyMessage(
+  date: string
+): Promise<{ character: "angel" | "devil"; message: string }> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey || apiKey === "your_api_key_here") {
+    throw new Error("ANTHROPIC_API_KEY is not configured");
+  }
+
+  const client = new Anthropic({ apiKey });
+
+  // 日付のハッシュでキャラクターを決定（毎日同じキャラが出るように）
+  const hash = getDateHash(date);
+  const characterChoice = hash % 2 === 0 ? "ダメ天使" : "ダメ悪魔";
+
+  const userPrompt = `今日の日付：${date}
+担当キャラクター：${characterChoice}
+
+${characterChoice}として、今日のひとことアドバイスをお願いします。
+日付（${date}）に合ったメッセージを生成してください。
+必ずJSON形式のみで回答してください。`;
+
+  // 1日1回しか呼ばれない（unstable_cache）ため、ephemeral プロンプトキャッシュは
+  // 効かない（5分TTL）。system はプレーン文字列で渡す。モデルは安価な Haiku 4.5。
+  const response = await client.messages.create({
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 256,
+    system: SYSTEM_PROMPT,
+    messages: [{ role: "user", content: userPrompt }],
+  });
+
+  const textContent = response.content.find((c) => c.type === "text");
+  const rawText = textContent?.type === "text" ? textContent.text : "";
+
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error("No JSON found in daily response");
+  }
+  const parsed = JSON.parse(jsonMatch[0]) as {
+    character?: string;
+    message?: string;
+  };
+  if (
+    !parsed.message ||
+    (parsed.character !== "angel" && parsed.character !== "devil")
+  ) {
+    throw new Error("Invalid daily response shape");
+  }
+  return { character: parsed.character, message: parsed.message };
+}
+
+// 日付をキーに「1日1回」だけ生成し、結果を Vercel Data Cache に保存（全インスタンス・
+// 全ユーザーで共有）。同じ日付の2回目以降の閲覧は API を呼ばずキャッシュから返すため、
+// Anthropic API コストが閲覧数に比例しなくなる（1日あたり実質1回の生成で済む）。
+const getCachedDailyMessage = unstable_cache(
+  (date: string) => generateDailyMessage(date),
+  ["daily-message-v1"],
+  { revalidate: 60 * 60 * 24, tags: ["daily-message"] }
+);
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const dateParam = searchParams.get("date");
@@ -103,63 +166,19 @@ export async function GET(request: NextRequest) {
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
   const date = dateParam && dateRegex.test(dateParam) ? dateParam : getTodayJST();
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-
-  // APIキーが未設定またはプレースホルダーの場合はフォールバックを返す
-  if (!apiKey || apiKey === "your_api_key_here") {
+  // フォールバック（APIキー未設定・生成失敗・JSON不正時）。キャッシュしない＝翌アクセスで再試行。
+  const fallbackResponse = () => {
     const hash = getDateHash(date);
     const fallback = FALLBACK_MESSAGES[hash % FALLBACK_MESSAGES.length];
     return Response.json({ ...fallback, date, luckyColor: getLuckyColor(date) });
-  }
+  };
 
   try {
-    const client = new Anthropic({ apiKey });
-
-    // 日付のハッシュでキャラクターを決定（毎日同じキャラが出るように）
-    const hash = getDateHash(date);
-    const characterChoice = hash % 2 === 0 ? "ダメ天使" : "ダメ悪魔";
-
-    const userPrompt = `今日の日付：${date}
-担当キャラクター：${characterChoice}
-
-${characterChoice}として、今日のひとことアドバイスをお願いします。
-日付（${date}）に合ったメッセージを生成してください。
-必ずJSON形式のみで回答してください。`;
-
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 256,
-      system: [
-        {
-          type: "text",
-          text: SYSTEM_PROMPT,
-          cache_control: { type: "ephemeral" },
-        },
-      ],
-      messages: [{ role: "user", content: userPrompt }],
-    });
-
-    const textContent = response.content.find((c) => c.type === "text");
-    const rawText = textContent?.type === "text" ? textContent.text : "";
-
-    try {
-      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        return Response.json({ ...parsed, date, luckyColor: getLuckyColor(date) });
-      }
-    } catch {
-      // JSON解析失敗はフォールバックへ
-    }
-
-    // フォールバック
-    const fallback = FALLBACK_MESSAGES[hash % FALLBACK_MESSAGES.length];
-    return Response.json({ ...fallback, date, luckyColor: getLuckyColor(date) });
+    const { character, message } = await getCachedDailyMessage(date);
+    return Response.json({ character, message, date, luckyColor: getLuckyColor(date) });
   } catch (error) {
     console.error("Daily API error:", error);
-    const hash = getDateHash(date);
-    const fallback = FALLBACK_MESSAGES[hash % FALLBACK_MESSAGES.length];
-    return Response.json({ ...fallback, date, luckyColor: getLuckyColor(date) });
+    return fallbackResponse();
   }
 }
 
