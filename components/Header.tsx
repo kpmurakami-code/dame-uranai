@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
 import type { User } from "@supabase/supabase-js";
@@ -34,15 +35,28 @@ export default function Header() {
 
   return (
     <header
-      className="w-full py-3 px-4 flex items-center justify-between"
-      style={{ borderBottom: "1px solid #fce4ec" }}
+      className="w-full py-3 px-5 sm:px-8 flex items-center justify-between sticky top-0 z-50"
+      style={{
+        background: "rgba(255,250,253,.78)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        borderBottom: "1px solid #fce4ec",
+      }}
     >
-      <Link
-        href="/"
-        className="text-xs tracking-widest font-bold"
-        style={{ color: "#ffb7c5" }}
-      >
-        ✦ ダメ占い ✦
+      <Link href="/" className="flex items-center gap-2 group">
+        <Image
+          src="/images/lp/deco/angel_bear.png"
+          alt=""
+          width={34}
+          height={34}
+          className="w-8 h-8 object-contain drift-animation"
+        />
+        <span
+          className="display text-base sm:text-lg font-extrabold tracking-wide"
+          style={{ color: "#e91e8c" }}
+        >
+          ダメ占い
+        </span>
       </Link>
 
       <div className="flex items-center gap-2">

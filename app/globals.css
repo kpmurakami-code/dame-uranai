@@ -18,8 +18,29 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans",
-    Meiryo, sans-serif;
+  font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN",
+    "Hiragino Sans", Meiryo, sans-serif;
+}
+
+/* 見出し用：丸ゴシック（だめかわ天界） */
+.display {
+  font-family: "Zen Maru Gothic", "M PLUS Rounded 1c", sans-serif;
+}
+/* 英字用 */
+.latin {
+  font-family: "Fredoka", "M PLUS Rounded 1c", sans-serif;
+  letter-spacing: 0.04em;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 横スクロール抑止（sticky を壊さないため hidden ではなく clip を使う）。
+   clip はスクロールコンテナを作らないので position:sticky のヘッダー固定を維持できる。 */
+html,
+body {
+  overflow-x: clip;
 }
 
 /* Kawaii star animation */
@@ -58,6 +79,56 @@ body {
 
 .card-flip {
   animation: cardFlip 0.6s ease-in-out;
+}
+
+/* ===== だめかわ天界：装飾アニメ／クラス ===== */
+@keyframes drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.drift-animation {
+  animation: drift 4s ease-in-out infinite;
+}
+
+.wiggle-animation {
+  animation: wiggle 2.4s ease-in-out infinite;
+}
+
+/* 浮遊装飾の土台 */
+.deco {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+.twinkle {
+  position: absolute;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* カードのぷにっと感 */
+.puni {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.puni:hover {
+  transform: translateY(-4px) scale(1.015);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-animation,
+  .float-animation-reverse,
+  .drift-animation,
+  .sparkle-animation,
+  .wiggle-animation {
+    animation: none;
+  }
 }
 
 @keyframes spin {

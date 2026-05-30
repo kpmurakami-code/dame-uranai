@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ダメ占い LP（現状）— Claude Design 引き継ぎ用</title>
+
+<!--
+================================================================================
+ ダメ占い ランディングページ（LP）— 現状スナップショット / デザイン引き継ぎ用
+================================================================================
+ このファイルは Next.js 実装 `app/page.tsx`（v2.1 リデザイン版）を、単体で開いて
+ レンダリング・編集できるように静的HTML化したものです。Claude Design や任意の
+ デザインツール／ブラウザでそのまま開けます。編集後は同じ class / style 構成のまま
+ `app/page.tsx` に書き戻せます（下記「実装へ戻す時」参照）。
+
+--------------------------------------------------------------------------------
+ ◆ ブランド / トーン
+--------------------------------------------------------------------------------
+ ・サービス名：ダメ占い（英: Dame Uranai）／ ダメ天使＆ダメ悪魔の本音占い
+ ・世界観：ゆるかわ。ほめ上手な「ダメ天使」と毒舌な「ダメ悪魔」の2人組が占う。
+   くすっと笑えて、でも本気で当たる。ターゲットは10代後半〜30代女性、SNS拡散前提。
+ ・トーン：やわらかい・かわいい・親しみ。角丸（rounded-3xl 多用）、淡いグラデ、
+   ふわふわ浮遊アニメ、キラキラ装飾。
+
+--------------------------------------------------------------------------------
+ ◆ カラートークン（このまま使ってOK）
+--------------------------------------------------------------------------------
+ ページ背景      : linear-gradient(135deg, #fff0f5 0%, #f0f8ff 50%, #fff9e6 100%)
+ メインピンク    : #e91e8c   (サービス名・見出し強調)
+ 主CTAグラデ     : linear-gradient(135deg, #ff6b9d, #c64dd1)
+ 副/数秘術グラデ : linear-gradient(135deg, #a78bfa, #7c3aed)
+ 本文(濃)        : #3d2c2c
+ 本文(中)        : #7a6060
+ 本文(淡ピンク)  : #b08090
+ 天使アクセント  : #c2185b   / 天使カード背景 linear-gradient(145deg,#fff9f0,#fce4ec)
+ 悪魔アクセント  : #6a1b9a / #7c3aed / 悪魔カード背景 linear-gradient(145deg,#f5f0ff,#e8d5ff)
+ ボーダー淡色    : #fce4ec / #ffb7c5 / #d8c4ff
+ 装飾スパークル  : #ffb7c5 / #b8e4f7 / #ffd6e7
+
+--------------------------------------------------------------------------------
+ ◆ フォント
+--------------------------------------------------------------------------------
+ "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif
+
+--------------------------------------------------------------------------------
+ ◆ 使用アセット（本番CDNを参照しているので画像は自動で表示されます）
+--------------------------------------------------------------------------------
+ ・ヒーロー  : /images/characters/26_ANGEL_DEVIL_PAIR.png
+ ・ダメ天使  : /images/characters/24_ANGEL.png
+ ・ダメ悪魔  : /images/characters/25_DEVIL.png
+ （ベースURL: https://dame-uranai.vercel.app ）
+
+--------------------------------------------------------------------------------
+ ◆ セクション構成（上から）
+--------------------------------------------------------------------------------
+ ① ヘッダー（ロゴ＋ログイン）
+ ② ヒーロー（PC2カラム：左コピー+CTA / 右キャラペア画像。主CTA「無料でタロット」）
+ ③ 今日のひとこと（1タップ入口。※ここは実装では /api/daily から動的取得。本ファイルはサンプル表示）
+ ④ ダメ占いの3つのいいところ（テキスト主体・PC3カラム）
+ ⑤ 占いメニュー（タロット=主役 / 数秘術。PC2カラム）
+ ⑥ 占い師紹介（2人セットの相棒として。PC2カラム）
+ ⑦ 占い結果をシェアしよう（#ダメ占い拡散訴求）
+ ⑧ 最終CTA
+ ⑨ フッター（利用規約・プライバシー）
+
+--------------------------------------------------------------------------------
+ ◆ 守ってほしい制約（重要）
+--------------------------------------------------------------------------------
+ 1. キャラ選択は提供しない。「天使メイン／悪魔メイン」など “選べる” 表現は置かない
+    （2人は常にセット。バッジは役割表現「ふわっと担当／ズバッと担当」までに留める）。
+ 2. 虚偽の利用者数・口コミ・★評価などのソーシャルプルーフは出さない（実データが無いため）。
+ 3. レスポンシブ必須：PC/タブレット/スマホで崩れないこと。特に「PCで中央に細い帯＋左右が
+    広大な余白」状態に戻さない（コンテナは max-w-5xl〜6xl を活用）。
+ 4. ゆるかわトーン・既存カラートークン・キャラ画像を踏襲する。
+
+--------------------------------------------------------------------------------
+ ◆ 実装へ戻す時（開発者向けメモ）
+--------------------------------------------------------------------------------
+ ・class はすべて Tailwind。インライン style もそのまま `app/page.tsx` に対応します。
+ ・<img src="https://dame-uranai.vercel.app/images/..."> は実装では
+   next/image の <Image src="/images/..."> に戻す（fill/sizes or width/height を付与）。
+ ・<a href="https://dame-uranai.vercel.app/uranai"> 等は next/link の <Link href="/uranai"> に戻す。
+ ・③今日のひとこと の中身は実装では <DailyMessage />（/api/daily 連動）。本ファイルの
+   吹き出しは見た目確認用サンプル。デザイン変更はガワ（枠・配色・余白）を対象に。
+ ・カスタムアニメ（float / floatReverse / sparkle）は実装では app/globals.css に定義済み。
+================================================================================
+-->
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  body {
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    color: #3d2c2c;
+  }
+  /* app/globals.css のキャラアニメを再現 */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+  @keyframes floatReverse {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(-5deg); }
+  }
+  @keyframes sparkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  .float-animation { animation: float 3s ease-in-out infinite; }
+  .float-animation-reverse { animation: floatReverse 3.5s ease-in-out infinite; }
+  .sparkle-animation { animation: sparkle 2s ease-in-out infinite; }
+  html { scroll-behavior: smooth; }
+</style>
+</head>
+
+<body>
+<main class="min-h-screen flex flex-col" style="background: linear-gradient(135deg, #fff0f5 0%, #f0f8ff 50%, #fff9e6 100%);">
+
+  <!-- ① ヘッダー（Header.tsx の未ログイン状態を再現） -->
+  <header class="w-full py-3 px-4 flex items-center justify-between" style="border-bottom: 1px solid #fce4ec;">
+    <a href="https://dame-uranai.vercel.app/" class="text-xs tracking-widest font-bold" style="color: #ffb7c5;">✦ ダメ占い ✦</a>
+    <div class="flex items-center gap-2">
+      <a href="https://dame-uranai.vercel.app/auth/login" class="text-xs px-3 py-1.5 rounded-full font-bold transition-all hover:scale-105" style="background: linear-gradient(135deg, #ff6b9d, #c64dd1); color: #fff;">ログイン</a>
+    </div>
+  </header>
+
+  <div class="flex-1 w-full">
+
+    <!-- ② ヒーローセクション -->
+    <section class="relative overflow-hidden px-6 pt-10 pb-12 sm:pt-14 sm:pb-16">
+      <div class="pointer-events-none absolute top-10 left-6 text-2xl sparkle-animation" style="color: #ffb7c5;">✦</div>
+      <div class="pointer-events-none absolute top-24 right-10 text-xl sparkle-animation" style="animation-delay: 0.5s; color: #b8e4f7;">★</div>
+      <div class="pointer-events-none absolute bottom-10 left-1/3 text-lg sparkle-animation" style="animation-delay: 1s; color: #ffd6e7;">✧</div>
+
+      <div class="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <!-- 左：コピー＋CTA -->
+        <div class="text-center lg:text-left order-2 lg:order-1">
+          <p class="text-sm sm:text-base font-medium mb-2" style="color: #b08090;">ダメ天使 × ダメ悪魔の本音占い</p>
+          <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-4" style="color: #e91e8c;">ダメ占い</h1>
+          <p class="text-base sm:text-lg leading-relaxed mb-7 max-w-md mx-auto lg:mx-0" style="color: #7a6060;">
+            ほめ上手な天使と、毒舌な悪魔。<br class="hidden sm:block" />
+            ぬけてる2人の掛け合いで、くすっと笑えて、でも本気で当たる占いを。
+          </p>
+
+          <div class="max-w-sm mx-auto lg:mx-0">
+            <a href="https://dame-uranai.vercel.app/uranai" class="block w-full py-4 px-8 rounded-full text-white text-lg sm:text-xl font-bold text-center shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 active:scale-95" style="background: linear-gradient(135deg, #ff6b9d, #c64dd1);">無料でタロットを占う</a>
+            <p class="text-xs sm:text-sm mt-2 mb-4 font-medium" style="color: #b08090;">✦ 登録なし・無料で3回 占えるよ ✦</p>
+
+            <div class="flex flex-col sm:flex-row gap-2">
+              <a href="https://dame-uranai.vercel.app/sujimei" class="flex-1 py-2.5 px-5 rounded-full text-center text-sm font-bold border-2 transition-all duration-200 hover:scale-105 active:scale-95" style="border-color: #a78bfa; color: #7c3aed; background: rgba(255,255,255,0.6);">数秘術を試す</a>
+              <a href="#daily" class="flex-1 py-2.5 px-5 rounded-full text-center text-sm font-bold border-2 transition-all duration-200 hover:scale-105 active:scale-95" style="border-color: #ffb7c5; color: #c2185b; background: rgba(255,255,255,0.6);">今日のひとこと</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右：キャラペア画像 -->
+        <div class="order-1 lg:order-2">
+          <div class="relative rounded-3xl overflow-hidden shadow-xl mx-auto max-w-sm lg:max-w-none" style="background: linear-gradient(145deg, #fce4ec, #e3f4fd);">
+            <div class="p-5">
+              <img src="https://dame-uranai.vercel.app/images/characters/26_ANGEL_DEVIL_PAIR.png" alt="ダメ天使とダメ悪魔" width="500" height="500" class="w-full h-auto object-contain float-animation" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ 今日のひとこと（※実装は <DailyMessage /> = /api/daily 連動。以下は見た目確認用サンプル） -->
+    <section id="daily" class="px-6 py-10 scroll-mt-20">
+      <div class="mx-auto max-w-2xl">
+        <h2 class="text-xl sm:text-2xl font-bold mb-2 text-center" style="color: #3d2c2c;">今日のひとこと</h2>
+        <p class="text-sm text-center mb-6" style="color: #7a6060;">1タップで、今日のダメ天使・ダメ悪魔からのメッセージとラッキーカラーをチェック。</p>
+
+        <!-- DailyMessage.tsx の見た目を静的再現（angel パターンのサンプル） -->
+        <div class="w-full max-w-md mx-auto rounded-3xl p-5 shadow-md" style="background: linear-gradient(145deg, #fff9f0, #fce4ec);">
+          <p class="text-xs font-bold text-center mb-3" style="color: #b08090;">✦ 今日のひとこと ✦</p>
+          <div class="flex items-start gap-3">
+            <div class="relative w-14 h-14 flex-shrink-0">
+              <img src="https://dame-uranai.vercel.app/images/characters/24_ANGEL.png" alt="ダメ天使" class="w-full h-full object-contain float-animation" />
+            </div>
+            <div class="flex-1">
+              <p class="text-xs font-bold mb-1" style="color: #c2185b;">ダメ天使</p>
+              <div class="rounded-2xl rounded-tl-sm p-3 text-sm leading-relaxed" style="background: #fce4ec; color: #3d2c2c;">
+                えっと〜、今日はなんだかいいことありそうな予感だよ〜？ 笑顔でいると、もっといいことが寄ってくるかも！（ふわっと）✨
+              </div>
+              <div class="flex items-center gap-2 mt-2 px-1">
+                <span class="text-xs" style="color: #b08090;">🍀 ラッキーカラー</span>
+                <span class="inline-block w-4 h-4 rounded-full border border-white shadow-sm flex-shrink-0" style="background: #ffb7c5;"></span>
+                <span class="text-xs font-bold" style="color: #3d2c2c;">ローズクォーツ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ④ 3つの価値 -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-6xl">
+        <h2 class="text-xl sm:text-2xl font-bold mb-2 text-center" style="color: #3d2c2c;">ダメ占いの3つのいいところ</h2>
+        <p class="text-sm text-center mb-8" style="color: #7a6060;">ふつうの占いじゃ物足りない、あなたへ。</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+          <div class="rounded-3xl p-6 shadow-md text-center md:text-left" style="background: linear-gradient(145deg, #ffffff, #fdf2f8);">
+            <div class="text-4xl mb-3" aria-hidden="true">😆</div>
+            <h3 class="font-bold text-base sm:text-lg mb-2" style="color: #c2185b;">掛け合いが面白い</h3>
+            <p class="text-sm leading-relaxed" style="color: #7a6060;">ほめ上手なダメ天使と、毒舌なダメ悪魔。2人のぬけてるやりとりで、占い結果がくすっと笑えるエンタメになるよ。</p>
+          </div>
+
+          <div class="rounded-3xl p-6 shadow-md text-center md:text-left" style="background: linear-gradient(145deg, #ffffff, #fdf2f8);">
+            <div class="text-4xl mb-3" aria-hidden="true">🔮</div>
+            <h3 class="font-bold text-base sm:text-lg mb-2" style="color: #c2185b;">AIが毎回ちがう本格的な読み解き</h3>
+            <p class="text-sm leading-relaxed" style="color: #7a6060;">引いたカードとテーマに合わせて、AIがその場で読み解き。テンプレじゃないから、何度占っても新しい発見がある。</p>
+          </div>
+
+          <div class="rounded-3xl p-6 shadow-md text-center md:text-left" style="background: linear-gradient(145deg, #ffffff, #fdf2f8);">
+            <div class="text-4xl mb-3" aria-hidden="true">🎁</div>
+            <h3 class="font-bold text-base sm:text-lg mb-2" style="color: #c2185b;">登録なし・無料3回ですぐ</h3>
+            <p class="text-sm leading-relaxed" style="color: #7a6060;">アカウント登録はいらないよ。ページを開いたら、そのまま無料で3回まで占える。気軽に試してみてね。</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑤ 占いメニュー -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-5xl">
+        <h2 class="text-xl sm:text-2xl font-bold mb-8 text-center" style="color: #3d2c2c;">占いメニュー</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+
+          <!-- タロット（主役） -->
+          <div class="rounded-3xl p-7 shadow-lg flex flex-col" style="background: linear-gradient(145deg, #fff0f6, #ffe3ef); border: 2px solid #ffb7c5;">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-xs font-bold px-3 py-1 rounded-full text-white" style="background: linear-gradient(135deg, #ff6b9d, #c64dd1);">人気No.1</span>
+            </div>
+            <h3 class="text-2xl font-bold mb-3" style="color: #e91e8c;">🔮 タロット占い</h3>
+            <p class="text-sm leading-relaxed mb-6 flex-1" style="color: #7a6060;">恋愛・仕事・お金など、占いたいテーマを選んでカードを引こう。1枚でサクッと、3枚で過去・現在・未来までじっくり。引いたカードに合わせて、2人がAIで読み解いてくれるよ。</p>
+            <a href="https://dame-uranai.vercel.app/uranai" class="block w-full py-3.5 px-6 rounded-full text-white text-base font-bold text-center shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95" style="background: linear-gradient(135deg, #ff6b9d, #c64dd1);">タロットを占う</a>
+          </div>
+
+          <!-- 数秘術 -->
+          <div class="rounded-3xl p-7 shadow-md flex flex-col" style="background: linear-gradient(145deg, #f5f0ff, #ece1ff); border: 2px solid #d8c4ff;">
+            <h3 class="text-xl font-bold mb-3 mt-1" style="color: #7c3aed;">🔢 数秘術占い</h3>
+            <p class="text-sm leading-relaxed mb-6 flex-1" style="color: #7a6060;">生年月日と名前から、あなたの「ライフパスナンバー」を計算。性格診断と今日の運勢、あなただけの「マイカラー」がわかるよ。一度入力すれば、次からは入力なしですぐ占える。</p>
+            <a href="https://dame-uranai.vercel.app/sujimei" class="block w-full py-3 px-6 rounded-full text-base font-bold text-center shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95" style="background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff;">数秘術を占う</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑥ 占い師紹介 -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-4xl">
+        <h2 class="text-xl sm:text-2xl font-bold mb-2 text-center" style="color: #3d2c2c;">占い師は、ぬけてる相棒2人組</h2>
+        <p class="text-sm text-center mb-8" style="color: #7a6060;">ダメ天使とダメ悪魔がいつも2人セットで、あなたの占いをお届け。</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+          <!-- ダメ天使 -->
+          <div class="rounded-3xl p-6 shadow-md flex flex-col items-center text-center" style="background: linear-gradient(145deg, #fff9f0, #fce4ec);">
+            <div class="relative w-28 h-28 mb-4">
+              <img src="https://dame-uranai.vercel.app/images/characters/24_ANGEL.png" alt="ダメ天使" class="w-full h-full object-contain float-animation" />
+            </div>
+            <h3 class="font-bold text-lg mb-1" style="color: #c2185b;">ダメ天使</h3>
+            <span class="text-xs px-3 py-1 rounded-full mb-3 inline-block" style="background: #fce4ec; color: #c2185b;">ふわっと担当</span>
+            <p class="text-sm leading-relaxed" style="color: #7a6060;">ポジティブ寄りの占い師。どんな結果も良い方へ読もうとする、ふわっと優しい天然さん。ときどき的外れだけど、いつも本気で応援してくれるよ。</p>
+          </div>
+
+          <!-- ダメ悪魔 -->
+          <div class="rounded-3xl p-6 shadow-md flex flex-col items-center text-center" style="background: linear-gradient(145deg, #f5f0ff, #e8d5ff);">
+            <div class="relative w-28 h-28 mb-4">
+              <img src="https://dame-uranai.vercel.app/images/characters/25_DEVIL.png" alt="ダメ悪魔" class="w-full h-full object-contain float-animation-reverse" />
+            </div>
+            <h3 class="font-bold text-lg mb-1" style="color: #6a1b9a;">ダメ悪魔</h3>
+            <span class="text-xs px-3 py-1 rounded-full mb-3 inline-block" style="background: #e8d5ff; color: #6a1b9a;">ズバッと担当</span>
+            <p class="text-sm leading-relaxed" style="color: #7a6060;">辛口リアリストの占い師。本音でズバッと課題を指摘するけど、最後にはちゃんと小さなエールを添えてくれる。実はかなり面倒見がいいよ。</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑦ シェアしよう -->
+    <section class="px-6 py-12">
+      <div class="mx-auto max-w-3xl">
+        <div class="rounded-3xl p-8 sm:p-10 shadow-md text-center" style="background: linear-gradient(145deg, #fffdf5, #fff0f6);">
+          <div class="text-4xl mb-3" aria-hidden="true">📣</div>
+          <h2 class="text-xl sm:text-2xl font-bold mb-3" style="color: #3d2c2c;">占い結果をシェアしよう</h2>
+          <p class="text-sm sm:text-base leading-relaxed mb-5" style="color: #7a6060;">おもしろい結果が出たら、SNSでシェアして友達と盛り上がろう。ダメ天使とダメ悪魔のセリフ入りのカードで、思わず誰かに見せたくなるよ。</p>
+          <span class="inline-block text-base sm:text-lg font-bold px-5 py-2 rounded-full" style="background: linear-gradient(135deg, #ffe3ef, #ece1ff); color: #c2185b;">#ダメ占い</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑧ 最終CTA -->
+    <section class="px-6 py-14">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-3" style="color: #e91e8c;">さっそく占ってみる？</h2>
+        <p class="text-sm sm:text-base mb-7" style="color: #7a6060;">登録なし・無料で3回。まずは気軽にタロットから。</p>
+        <div class="max-w-sm mx-auto space-y-3">
+          <a href="https://dame-uranai.vercel.app/uranai" class="block w-full py-4 px-8 rounded-full text-white text-lg sm:text-xl font-bold text-center shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 active:scale-95" style="background: linear-gradient(135deg, #ff6b9d, #c64dd1);">無料でタロットを占う</a>
+          <a href="https://dame-uranai.vercel.app/sujimei" class="block w-full py-3 px-8 rounded-full text-base font-bold text-center shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95" style="background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff;">数秘術を占う</a>
+        </div>
+        <p class="text-xs sm:text-sm mt-5" style="color: #b08090;">✦ ログインすると、占い履歴が残るよ ✦</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ⑨ フッター -->
+  <footer class="py-6 px-6 text-center text-xs" style="color: #b08090; border-top: 1px solid #fce4ec;">
+    <div class="flex items-center justify-center gap-4 mb-3">
+      <a href="https://dame-uranai.vercel.app/terms" class="underline" style="color: #b08090;">利用規約</a>
+      <a href="https://dame-uranai.vercel.app/privacy" class="underline" style="color: #b08090;">プライバシーポリシー</a>
+    </div>
+    <p>© 2026 ダメ占い</p>
+    <p class="mt-1">Dame Uranai - ダメ天使＆ダメ悪魔の本音占い</p>
+  </footer>
+
+</main>
+</body>
+</html>

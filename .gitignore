@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# test / dev artifacts (Playwright MCP snapshots, root-level screenshots, dev server logs)
+.playwright-mcp/
+/*.png
+*.log
+
+# Claude Design 受領バンドル（重いため除外。使用素材は public/images/lp/ にコピー済み）
+design-handoff/claude-design/
