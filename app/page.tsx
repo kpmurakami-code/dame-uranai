@@ -29,7 +29,7 @@ export default function Home() {
             ダメ占い
           </h1>
           <p className="text-sm sm:text-base" style={{ color: "#7a6060" }}>
-            甘い天使と毒舌悪魔の本音占い。
+            ほめ上手な天使と、毒舌な悪魔。
             <br className="sm:hidden" />
             くすっと笑えて、でも本気で当たる ✨
           </p>
