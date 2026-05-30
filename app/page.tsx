@@ -216,8 +216,8 @@ export default function Home() {
               <Image
                 src="/images/lp/scene/angel_wand.png"
                 alt=""
-                width={262}
-                height={262}
+                width={1024}
+                height={1536}
                 sizes="112px"
                 className="w-24 h-24 sm:w-28 sm:h-28 object-contain mx-auto sm:mx-0 float-animation"
               />
@@ -277,8 +277,8 @@ export default function Home() {
                 <Image
                   src="/images/lp/scene/bears_crystal.png"
                   alt=""
-                  width={262}
-                  height={262}
+                  width={1024}
+                  height={1536}
                   sizes="96px"
                   className="w-24 h-24 object-contain mb-3 drift-animation"
                 />
@@ -306,8 +306,8 @@ export default function Home() {
                 <Image
                   src="/images/lp/scene/laptop.png"
                   alt=""
-                  width={262}
-                  height={262}
+                  width={1024}
+                  height={1536}
                   sizes="96px"
                   className="w-24 h-24 object-contain mb-3 drift-animation"
                   style={{ animationDelay: ".4s" }}
@@ -672,8 +672,8 @@ export default function Home() {
             <Image
               src="/images/lp/scene/couple.png"
               alt="ダメ天使とダメ悪魔"
-              width={262}
-              height={262}
+              width={1254}
+              height={1254}
               sizes="(max-width: 640px) 176px, 224px"
               className="w-44 sm:w-56 h-auto object-contain mx-auto mb-4 float-animation"
             />
