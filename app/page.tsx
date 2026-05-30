@@ -75,7 +75,7 @@ export default function Home() {
                 className="text-sm sm:text-base font-bold mb-4"
                 style={{ color: "#7a6060" }}
               >
-                ほめ上手な天使と、毒舌な悪魔。ぬけてる2人の掛け合いで、くすっと笑えて、でも本気で当たる占いを。
+                ダメかわ天使＆悪魔の、本音占い。くすっと笑えて、でも本気で当たる。
               </p>
               <Link
                 href="/uranai"
