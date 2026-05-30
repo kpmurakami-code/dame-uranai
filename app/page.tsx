@@ -458,7 +458,7 @@ export default function Home() {
                     className="text-sm leading-relaxed"
                     style={{ color: "#7a6060" }}
                   >
-                    <b style={{ color: "#c2185b" }}>ふわっと天使は、</b>
+                    <b style={{ color: "#c2185b" }}>ダメ天使は、</b>
                     どんなカードも良い方へ。やさしく肯定してくれて、まれに直感がズバリ当たってびっくり。
                   </p>
                 </div>
@@ -478,7 +478,7 @@ export default function Home() {
                     className="text-sm leading-relaxed"
                     style={{ color: "#7a6060" }}
                   >
-                    <b style={{ color: "#6a1b9a" }}>ズバッと悪魔は、</b>
+                    <b style={{ color: "#6a1b9a" }}>ダメ悪魔は、</b>
                     悪態のつもりが、なぜか的確。本音で核心を突いて、結局あなたの役に立ってしまう。
                   </p>
                 </div>
