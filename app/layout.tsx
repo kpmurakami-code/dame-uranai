@@ -1,0 +1,65 @@
+import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
+
+// 本番URL。Vercelデプロイ後に環境変数 NEXT_PUBLIC_SITE_URL を本番ドメインに設定する。
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dame-uranai.vercel.app";
+const siteName = "ダメ占い";
+const title = "ダメ占い｜ダメ天使＆ダメ悪魔の本音占い";
+const description =
+  "甘い天使と毒舌悪魔が、AIであなたを本音占い。くすっと笑えて、でも本気で当たる「ダメ占い」。タロット・数秘術が無料で楽しめます。";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: siteUrl,
+    siteName,
+    locale: "ja_JP",
+    type: "website",
+    images: [
+      {
+        url: "/images/og.png",
+        width: 1200,
+        height: 630,
+        alt: "ダメ占い - ダメ天使＆ダメ悪魔の本音占い",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/images/og.png"],
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ja" className="h-full">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="min-h-full flex flex-col antialiased">
+        {children}
+        <Analytics />
+      </body>
+    </html>
+  );
+}
