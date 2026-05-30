@@ -1,5 +1,7 @@
 # ダメ占い デプロイ手順（Vercel）
 
+> 運用コストの試算は [COST.md](COST.md) を参照（Anthropic API / Vercel / Supabase / ドメイン）。
+
 ## 0. 公開前チェックリスト
 
 - [ ] `public/images/og.png`（1200×630）を配置した
