@@ -6,69 +6,6 @@ import Header from "@/components/Header";
 const CTA = "linear-gradient(135deg, #ff6b9d, #c64dd1)";
 const GRAPE = "linear-gradient(135deg, #a78bfa, #7c3aed)";
 
-const genres = [
-  {
-    arch: "/images/lp/arch/pink.png",
-    scene: "/images/lp/scene/couple.png",
-    banner: "/images/lp/banner/love.png",
-    bannerAlt: "恋愛",
-    sceneWidth: "66%",
-    delay: "0s",
-    desc: (
-      <>
-        恋愛運や出会い、
-        <br />
-        相性を占うよ
-      </>
-    ),
-  },
-  {
-    arch: "/images/lp/arch/blue.png",
-    scene: "/images/lp/scene/laptop.png",
-    banner: "/images/lp/banner/work.png",
-    bannerAlt: "仕事",
-    sceneWidth: "64%",
-    delay: "0.3s",
-    desc: (
-      <>
-        仕事運や適職、
-        <br />
-        キャリアを占うよ
-      </>
-    ),
-  },
-  {
-    arch: "/images/lp/arch/yellow.png",
-    scene: "/images/lp/scene/devil_money.png",
-    banner: "/images/lp/banner/money.png",
-    bannerAlt: "お金",
-    sceneWidth: "62%",
-    delay: "0.6s",
-    desc: (
-      <>
-        金運や収入、
-        <br />
-        豊かさを占うよ
-      </>
-    ),
-  },
-  {
-    arch: "/images/lp/arch/purple.png",
-    scene: "/images/lp/scene/angel_wand.png",
-    banner: "/images/lp/banner/overall.png",
-    bannerAlt: "全体運",
-    sceneWidth: "58%",
-    delay: "0.9s",
-    desc: (
-      <>
-        総合運や毎日の運勢を
-        <br />
-        トータルで占うよ
-      </>
-    ),
-  },
-];
-
 export default function Home() {
   return (
     <main
@@ -181,118 +118,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ③ ジャンル選択ボード */}
-        <section className="relative px-5 sm:px-6 py-12 sm:py-14">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/lp/deco/heart_sm.png"
-            alt=""
-            className="deco drift-animation"
-            style={{ top: "8%", left: "6%", width: 30 }}
-          />
-          <span
-            className="twinkle sparkle-animation"
-            style={{ top: "14%", right: "8%", fontSize: 22, color: "#c9a8ff" }}
-          >
-            ✦
-          </span>
-
-          <div className="mx-auto max-w-5xl">
-            <div className="text-center mb-9">
-              <span
-                className="display inline-block text-sm font-bold px-5 py-1.5 rounded-full mb-3"
-                style={{
-                  background: "linear-gradient(135deg,#ffe3ef,#ffd0e2)",
-                  color: "#c2185b",
-                }}
-              >
-                ＼ ジャンルを選んでね ／
-              </span>
-              <h2
-                className="display text-2xl sm:text-3xl font-black"
-                style={{ color: "#3d2c2c" }}
-              >
-                占いたいジャンルを選んでね
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-              {genres.map((g) => (
-                <Link
-                  key={g.bannerAlt}
-                  href="/uranai"
-                  className="puni group block text-center"
-                >
-                  <div className="relative aspect-square">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={g.arch}
-                      alt=""
-                      className="absolute inset-0 w-full h-full object-contain"
-                    />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={g.scene}
-                      alt=""
-                      className="absolute left-1/2 top-[34%] -translate-x-1/2 -translate-y-1/2 object-contain drift-animation"
-                      style={{ width: g.sceneWidth, animationDelay: g.delay }}
-                    />
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={g.banner}
-                      alt={g.bannerAlt}
-                      className="absolute left-1/2 bottom-[2%] -translate-x-1/2 w-[88%] object-contain"
-                    />
-                  </div>
-                  <p
-                    className="text-xs sm:text-sm leading-snug mt-1 font-medium"
-                    style={{ color: "#7a6060" }}
-                  >
-                    {g.desc}
-                  </p>
-                </Link>
-              ))}
-
-              {/* おまかせ */}
-              <Link
-                href="/uranai"
-                className="puni group block text-center col-span-2 md:col-span-1 max-w-[50%] md:max-w-none mx-auto md:mx-0"
-              >
-                <div className="relative aspect-square">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/lp/arch/green.png"
-                    alt=""
-                    className="absolute inset-0 w-full h-full object-contain"
-                  />
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/lp/scene/bears_crystal.png"
-                    alt=""
-                    className="absolute left-1/2 top-[34%] -translate-x-1/2 -translate-y-1/2 w-[66%] object-contain drift-animation"
-                    style={{ animationDelay: "1.2s" }}
-                  />
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/lp/banner/omakase.png"
-                    alt="おまかせ"
-                    className="absolute left-1/2 bottom-[2%] -translate-x-1/2 w-[88%] object-contain"
-                  />
-                </div>
-                <p
-                  className="text-xs sm:text-sm leading-snug mt-1 font-medium"
-                  style={{ color: "#7a6060" }}
-                >
-                  迷ったときはコレ！
-                  <br />
-                  おすすめを占うよ
-                </p>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ④ 占いメニュー */}
+        {/* ③ 占いメニュー */}
         <section className="relative px-5 sm:px-6 py-12">
           <div className="mx-auto max-w-5xl">
             <div className="text-center mb-9">
@@ -377,13 +203,6 @@ export default function Home() {
                   </p>
                 </Link>
               </div>
-              <Link
-                href="/uranai"
-                className="block w-full sm:w-auto sm:inline-block mt-6 mx-auto py-3.5 px-10 rounded-full text-white text-base font-extrabold text-center shadow-md puni"
-                style={{ background: CTA }}
-              >
-                タロットを占う
-              </Link>
             </div>
 
             {/* 数秘術 */}
