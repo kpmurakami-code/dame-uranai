@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { consumeUsage } from "@/lib/usageGate";
 
 // ラッキーカラーパレット（AIはこのリストから選択）
 const TAROT_LUCKY_COLORS = [
@@ -65,6 +66,15 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { theme, cards, characterMode } = body;
+
+    // フリーミアム：サーバー側ゲート（Anthropic呼び出し前に判定・記録）
+    const gate = await consumeUsage("tarot");
+    if (gate.limited) {
+      return Response.json(
+        { limited: true, reason: gate.reason },
+        { status: 402 }
+      );
+    }
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
 

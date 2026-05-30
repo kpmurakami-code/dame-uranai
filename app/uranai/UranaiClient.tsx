@@ -8,7 +8,7 @@ import {
   type TarotCard,
 } from "./tarotData";
 import type { CardData } from "@/lib/saveFortune";
-import { checkFreemiumLimit, recordFortuneUsage } from "@/lib/freemium";
+import { checkFreemiumLimit } from "@/lib/freemium";
 import { saveFortune } from "@/lib/saveFortune";
 import PaywallModal from "@/components/PaywallModal";
 import Header from "@/components/Header";
@@ -87,6 +87,7 @@ export default function UranaiClient() {
     setIsLoadingFortune(true);
     setFortuneError(false);
     let result: FortuneResult;
+    let limitedHit = false;
     try {
       const response = await fetch("/api/fortune", {
         method: "POST",
@@ -102,6 +103,13 @@ export default function UranaiClient() {
           characterMode: "both",
         }),
       });
+
+      // フリーミアム制限（サーバー権威）：結果を出さずペイウォール
+      if (response.status === 402) {
+        limitedHit = true;
+        setShowPaywall(true);
+        return;
+      }
 
       if (!response.ok) throw new Error("API error");
 
@@ -133,10 +141,16 @@ export default function UranaiClient() {
       setFortune(result);
     } finally {
       setIsLoadingFortune(false);
-      setStep("result");
-      // ログイン済みの場合のみ履歴保存（result は上で確定済み）
-      const savedResult = result!;
-      saveFortune({
+      if (limitedHit) {
+        // 制限到達時は結果画面に進まず、テーマ選択へ戻す（ペイウォール表示中）
+        setStep("select");
+      } else {
+        setStep("result");
+        // 残り回数をサーバーから再取得して更新
+        checkFreemiumLimit().then(({ remaining }) => setRemainingCount(remaining));
+        // ログイン済みの場合のみ履歴保存（result は上で確定済み）
+        const savedResult = result!;
+        saveFortune({
         fortune_type: "tarot",
         theme,
         angel_text: savedResult.angel,
@@ -161,6 +175,7 @@ export default function UranaiClient() {
         lucky_color_name: savedResult.luckyColor?.name,
         lucky_color_hex: savedResult.luckyColor?.hex,
       }).catch(console.error);
+      }
     }
   }, []);
 
@@ -196,10 +211,7 @@ export default function UranaiClient() {
       }
 
       setDrawnCards(cards);
-      // 使用回数を記録
-      await recordFortuneUsage("tarot");
-      // 残り回数を更新
-      checkFreemiumLimit().then(({ remaining }) => setRemainingCount(remaining));
+      // 使用回数の記録・残回数更新はサーバー権威（fetchFortune 内で更新）
       // step は fetchFortune 完了後に "result" へ切り替わる
       fetchFortune(cards, selectedTheme);
     }, 1800);

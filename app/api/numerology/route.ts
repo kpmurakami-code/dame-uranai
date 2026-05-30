@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { consumeUsage } from "@/lib/usageGate";
 
 // キャラクター設定（タロット用と同じ構成）
 const SYSTEM_PROMPT = `あなたはダメ天使とダメ悪魔という、2人で1組の占い師です。2人とも「役割に対してダメ」なのが個性（＝だめかわ）。ダメさは動機と結果がねじれて真逆。
@@ -36,6 +37,15 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { name, birthdate, lifePathNumber, todayNumber } = body;
+
+    // フリーミアム：サーバー側ゲート（Anthropic呼び出し前に判定・記録）
+    const gate = await consumeUsage("numerology");
+    if (gate.limited) {
+      return Response.json(
+        { limited: true, reason: gate.reason },
+        { status: 402 }
+      );
+    }
 
     const apiKey = process.env.ANTHROPIC_API_KEY;
 

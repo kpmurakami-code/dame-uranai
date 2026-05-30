@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
-import { checkFreemiumLimit, recordFortuneUsage } from "@/lib/freemium";
+import { checkFreemiumLimit } from "@/lib/freemium";
 import { saveFortune } from "@/lib/saveFortune";
 import { getLifePathColor } from "@/lib/numerologyColors";
 import PaywallModal from "@/components/PaywallModal";
@@ -136,10 +136,7 @@ export default function SujimeiClient() {
       // 無視
     }
 
-    // 使用回数を記録
-    await recordFortuneUsage("numerology");
-    // 残り回数を更新
-    checkFreemiumLimit().then(({ remaining }) => setRemainingCount(remaining));
+    // 使用回数の記録・残回数更新はサーバー権威（成功後に更新）
 
     try {
       const response = await fetch("/api/numerology", {
@@ -153,11 +150,21 @@ export default function SujimeiClient() {
         }),
       });
 
+      // フリーミアム制限（サーバー権威）：結果を出さずペイウォール
+      if (response.status === 402) {
+        setShowPaywall(true);
+        setLifePathNumber(null);
+        setTodayNumber(null);
+        return;
+      }
+
       if (!response.ok) throw new Error("API error");
 
       const data: NumerologyResult = await response.json();
       setResult(data);
       analytics.numerologyComplete();
+      // 残り回数をサーバーから再取得して更新
+      checkFreemiumLimit().then(({ remaining }) => setRemainingCount(remaining));
       // 履歴保存（ログイン済みのみ）
       const lpnColor = getLifePathColor(lpn);
       saveFortune({
