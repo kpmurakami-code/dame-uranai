@@ -143,8 +143,10 @@ const LINES: Record<
 };
 
 // ハッシュから配列要素を決定的に選ぶ。
+// seed は負になりうる（符号付きシフトの結果など）ため、必ず正のインデックスに正規化する。
 function pick<T>(arr: T[], seed: number): T {
-  return arr[seed % arr.length];
+  const i = ((Math.trunc(seed) % arr.length) + arr.length) % arr.length;
+  return arr[i];
 }
 
 /**
@@ -171,8 +173,8 @@ export function calcCompatibility(
   // 文言選択用に別シードを作る（スコアと相関しすぎないよう撹拌）
   const lineSeed = hashString(`${first}~${second}~du`);
   const angel = pick(LINES[band].angel, lineSeed);
-  const devil = pick(LINES[band].devil, lineSeed >> 3);
-  const advice = pick(LINES[band].advice, lineSeed >> 6);
+  const devil = pick(LINES[band].devil, lineSeed >>> 3);
+  const advice = pick(LINES[band].advice, lineSeed >>> 6);
 
   // 相性カラー：スコアから決定的にライフパス相当の番号を選び色を流用
   const colorNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
