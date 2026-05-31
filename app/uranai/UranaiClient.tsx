@@ -13,6 +13,7 @@ import { saveFortune } from "@/lib/saveFortune";
 import PaywallModal from "@/components/PaywallModal";
 import Header from "@/components/Header";
 import ShareButtons from "@/components/ShareButtons";
+import PremiumInterestButton from "@/components/PremiumInterestButton";
 import { analytics } from "@/lib/analytics";
 
 type Step = "select" | "drawing" | "result";
@@ -897,6 +898,25 @@ export default function UranaiClient() {
                 />
               </div>
             )}
+
+            {/* プレミアムteaser（控えめ・結果の邪魔をしない） */}
+            <div
+              className="rounded-2xl p-4 mb-4 text-center"
+              style={{
+                background: "rgba(255,255,255,0.7)",
+                border: "1px dashed #ddc9ff",
+              }}
+            >
+              <p className="text-sm font-bold mb-1" style={{ color: "#7c3aed" }}>
+                ✨ もっと本格的なタロット占いはプレミアムで
+              </p>
+              <p className="text-xs" style={{ color: "#b08090" }}>
+                恋愛にしぼった占いや、もっとカードを使った深い読み解きを準備中だよ。近日公開予定！
+              </p>
+            </div>
+
+            {/* プレミアム先行登録（F-16・需要検証） */}
+            <PremiumInterestButton source="tarot_result" />
 
             {/* アクションボタン */}
             <div className="space-y-3">

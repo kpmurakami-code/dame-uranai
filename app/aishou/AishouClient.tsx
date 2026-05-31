@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import Header from "@/components/Header";
 import ShareButtons from "@/components/ShareButtons";
+import PremiumInterestButton from "@/components/PremiumInterestButton";
 import { analytics } from "@/lib/analytics";
 import {
   calcCompatibility,
@@ -627,7 +628,7 @@ export default function AishouClient() {
 
             {/* プレミアム誘導（ソフト予告） */}
             <div
-              className="rounded-2xl p-4 mb-6 text-center"
+              className="rounded-2xl p-4 mb-4 text-center"
               style={{
                 background: "rgba(255,255,255,0.7)",
                 border: "1px dashed #ddc9ff",
@@ -640,6 +641,9 @@ export default function AishouClient() {
                 恋の進め方・相手の本音まで、ダメ天使＆ダメ悪魔がじっくり占うフル版を準備中だよ。
               </p>
             </div>
+
+            {/* プレミアム先行登録（F-16・需要検証） */}
+            <PremiumInterestButton source="aishou" />
 
             {/* シェア */}
             <ShareButtons

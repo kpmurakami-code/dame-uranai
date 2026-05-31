@@ -48,4 +48,10 @@ export const analytics = {
   // ペイウォール表示（source: 占い種別 / 未ログインかログイン済みか）
   paywallShown: (source: string, isLoggedIn: boolean) =>
     emit("paywall_shown", { source, state: isLoggedIn ? "logged_in" : "guest" }),
+
+  // プレミアム先行登録（F-16・需要検証）
+  premiumInterestOpen: (source: string) =>
+    emit("premium_interest_open", { source }),
+  premiumInterestRegistered: (source: string, feature: string) =>
+    emit("premium_interest_registered", { source, feature }),
 };
