@@ -1,9 +1,25 @@
 import SujimeiClient from "./SujimeiClient";
+import { SITE_URL } from "@/lib/site";
+
+const title = "数秘術占い｜ダメ占い";
+const description =
+  "生年月日と名前で占う数秘術🔢 ライフパスナンバーからあなたの本質を、ダメ天使＆ダメ悪魔が本音で読み解くよ。登録なし・無料。#ダメ占い";
 
 export const metadata = {
-  title: "数秘術占い｜ダメ占い",
-  description:
-    "生年月日と名前を入力して、数秘術のライフパスナンバーに基づいた性格診断・今日の運勢を知ろう！",
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: `${SITE_URL}/sujimei`,
+    images: ["/images/og.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/images/og.png"],
+  },
 };
 
 export default function SujimeiPage() {

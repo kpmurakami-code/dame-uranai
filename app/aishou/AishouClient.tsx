@@ -155,6 +155,26 @@ export default function AishouClient() {
     setDayB("");
   };
 
+  // 友だち招待（バイラルの起点）：相手に「一緒に占お」と送る
+  const handleInvite = useCallback(async () => {
+    const text = `ダメ天使＆ダメ悪魔の相性占い、一緒にやってみない？💞 あなたとの相性、占ってみたい〜！👼😈 #ダメ占い\n${SITE_URL}/aishou`;
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share({ text });
+        analytics.shareClick("aishou_invite", "native");
+      } else {
+        window.open(
+          `https://line.me/R/share?text=${encodeURIComponent(text)}`,
+          "_blank",
+          "noopener,noreferrer"
+        );
+        analytics.shareClick("aishou_invite", "line");
+      }
+    } catch (err) {
+      if ((err as Error)?.name !== "AbortError") console.error("招待エラー:", err);
+    }
+  }, []);
+
   const isFormValid = nameA.trim() !== "" && nameB.trim() !== "";
   const showResult = result !== null;
 
@@ -654,6 +674,15 @@ export default function AishouClient() {
               filename="aishou-result.png"
               source="aishou"
             />
+
+            {/* 友だち招待フック（2人占い＝バイラルの起点） */}
+            <button
+              onClick={handleInvite}
+              className="w-full mt-3 py-3 px-6 rounded-full text-sm font-bold text-center shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95"
+              style={{ background: "#ffffff", color: "#c2185b", border: "2px solid #ffd6e7" }}
+            >
+              💌 相手を相性占いに誘う
+            </button>
 
             {/* 再操作 */}
             <div className="space-y-3 mt-6">

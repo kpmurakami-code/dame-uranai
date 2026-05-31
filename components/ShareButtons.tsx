@@ -114,6 +114,11 @@ export default function ShareButtons({
 
   return (
     <div className="flex flex-col gap-3 mt-4">
+      {/* シェア誘導の一言（拡散の後押し） */}
+      <p className="text-center text-xs font-bold" style={{ color: "#c2185b" }}>
+        📣 結果をシェアして友だちにも教えてあげて〜！<span style={{ color: "#7c3aed" }}>#ダメ占い</span>
+      </p>
+
       {/* ① ワンタップ共有（対応環境のみ＝主にスマホ） */}
       {canNativeShare && (
         <button
