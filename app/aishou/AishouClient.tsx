@@ -484,7 +484,7 @@ export default function AishouClient() {
                 className="text-center text-xs font-bold mt-2"
                 style={{ color: "#c2185b" }}
               >
-                #ダメ占い
+                © ダメ占い ｜ #ダメ占い
               </p>
             </div>
             {/* ===== /シェア用カード ===== */}
@@ -707,6 +707,7 @@ export default function AishouClient() {
           </Link>
         </div>
         <p>© 2026 ダメ占い</p>
+        <p className="mt-1">キャラクター「ダメ天使」「ダメ悪魔」の無断使用を禁じます</p>
       </footer>
     </div>
   );

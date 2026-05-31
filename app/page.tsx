@@ -820,6 +820,7 @@ export default function Home() {
           </Link>
         </div>
         <p>© 2026 ダメ占い</p>
+        <p className="mt-1">キャラクター「ダメ天使」「ダメ悪魔」の無断使用を禁じます</p>
         <p className="mt-1">Dame Uranai — ダメ天使＆ダメ悪魔の本音占い</p>
       </footer>
     </main>

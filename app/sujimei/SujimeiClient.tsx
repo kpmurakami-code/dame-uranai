@@ -564,6 +564,10 @@ export default function SujimeiClient() {
                   </div>
                 </>
               )}
+              {/* 著作権表記 */}
+              <p className="text-center font-bold mt-3" style={{ color: "#b08090", fontSize: "10px" }}>
+                © ダメ占い ｜ #ダメ占い
+              </p>
             </div>
             {/* ===== /シェア用カード ===== */}
 
