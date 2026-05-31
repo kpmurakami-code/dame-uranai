@@ -57,7 +57,7 @@ export default function PaywallModal({ onClose, isLoggedIn, source = "unknown" }
 
         <div className="px-5 pb-6 pt-4 space-y-3">
           {isLoggedIn ? (
-            /* ログイン済み：1日3回制限に達した */
+            /* ログイン済み：1日の安全上限に達した（実質無制限のため通常は出ない） */
             <>
               <div
                 className="rounded-2xl p-3 text-sm leading-relaxed"
@@ -67,7 +67,7 @@ export default function PaywallModal({ onClose, isLoggedIn, source = "unknown" }
                   ダメ天使
                 </span>
                 <p style={{ color: "#5d4037" }}>
-                  えっと〜、今日はもう3回占ったよ〜！✨
+                  えっと〜、今日はもうたくさん占ったね〜！✨
                   またあした、いっぱい占おうね〜？（ふわっと）
                 </p>
               </div>
@@ -79,7 +79,7 @@ export default function PaywallModal({ onClose, isLoggedIn, source = "unknown" }
                   ダメ悪魔
                 </span>
                 <p style={{ color: "#4a148c" }}>
-                  今日の分は使い切ったわ。まあ、3回も占ったんだから十分でしょ。
+                  今日の分は使い切ったわ。まあ、こんなに占ったんだから十分でしょ。
                   明日また来なさいよ。待ってあげるから。
                 </p>
               </div>
@@ -130,7 +130,7 @@ export default function PaywallModal({ onClose, isLoggedIn, source = "unknown" }
                 }}
                 onClick={onClose}
               >
-                Googleで登録して毎日3回使う
+                Googleで登録して占い放題
               </Link>
               <button
                 onClick={onClose}
