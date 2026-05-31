@@ -79,7 +79,7 @@ export default function Home() {
                 className="text-sm sm:text-base font-bold mb-4"
                 style={{ color: "#7a6060" }}
               >
-                ダメかわ天使＆悪魔の、本音占い。くすっと笑えて、でも本気で当たる。
+                くすっと笑えて、でも本気で当たる。タロット・数秘術・相性占い、ぜんぶ楽しめるよ。
               </p>
               <Link
                 href="/uranai"
