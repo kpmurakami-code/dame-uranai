@@ -153,7 +153,7 @@ export default function ShareButtons({
         📣 結果をシェアして友だちにも教えてあげて〜！<span style={{ color: "#7c3aed" }}>#ダメ占い</span>
       </p>
 
-      {/* ① ワンタップ共有（対応環境のみ＝主にスマホ） */}
+      {/* ① 画像つきワンタップ共有（対応環境＝主にスマホ）＝本命。結果画像ごと共有シートへ */}
       {canNativeShare && (
         <button
           onClick={handleNativeShare}
@@ -161,11 +161,20 @@ export default function ShareButtons({
           className="w-full py-3 px-6 rounded-full text-white text-sm font-bold text-center shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-105 active:scale-95"
           style={{ background: "linear-gradient(135deg, #ff6b9d, #c64dd1)" }}
         >
-          {isGenerating ? "準備中..." : "📲 シェアする"}
+          {isGenerating ? "準備中..." : "📲 画像つきでシェア"}
         </button>
       )}
 
-      {/* ②③④ 個別の共有先 */}
+      {/* リンクでの共有（補助）。本命の「画像つき」と区別するための見出し（スマホのみ） */}
+      {canNativeShare && (
+        <div className="flex items-center gap-2" aria-hidden="true">
+          <div className="flex-1 h-px" style={{ background: "#fce4ec" }} />
+          <span className="text-xs" style={{ color: "#b08090" }}>またはリンクでシェア</span>
+          <div className="flex-1 h-px" style={{ background: "#fce4ec" }} />
+        </div>
+      )}
+
+      {/* ②③④ 個別の共有先（リンク・補助） */}
       <div className="grid grid-cols-3 gap-2">
         <button
           onClick={downloadImage}
