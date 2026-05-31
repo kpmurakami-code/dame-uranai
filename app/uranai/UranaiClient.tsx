@@ -280,19 +280,27 @@ export default function UranaiClient() {
         {/* ===== テーマ選択ステップ ===== */}
         {step === "select" && (
           <div className="w-full max-w-md">
-            {/* janle.png ジャンル選択イラスト */}
+            {/* キャラクター（ダメ天使＆ダメ悪魔） */}
             <div className="text-center mb-6">
-              <div className="relative w-full max-w-xs mx-auto mb-4"
-                style={{ aspectRatio: "1/1" }}
-              >
-                <Image
-                  src="/images/characters/janle.png"
-                  alt="ジャンル選択"
-                  fill
-                  sizes="200px"
-                  className="object-contain"
-                  priority
-                />
+              <div className="flex items-end justify-center gap-3 mb-4">
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28">
+                  <Image
+                    src="/images/characters/24_ANGEL.png"
+                    alt="ダメ天使"
+                    fill
+                    sizes="120px"
+                    className="object-contain float-animation"
+                  />
+                </div>
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28">
+                  <Image
+                    src="/images/characters/25_DEVIL.png"
+                    alt="ダメ悪魔"
+                    fill
+                    sizes="120px"
+                    className="object-contain float-animation-reverse"
+                  />
+                </div>
               </div>
               <div
                 className="rounded-2xl p-3 mb-2 text-sm"
