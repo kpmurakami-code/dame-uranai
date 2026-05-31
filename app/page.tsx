@@ -168,7 +168,7 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                 <Link
-                  href="/uranai"
+                  href="/uranai?spread=single"
                   className="puni block rounded-3xl p-4 shadow-md text-center"
                   style={{
                     background: "rgba(255,255,255,.65)",
@@ -191,7 +191,7 @@ export default function Home() {
                   </p>
                 </Link>
                 <Link
-                  href="/uranai"
+                  href="/uranai?spread=three"
                   className="puni block rounded-3xl p-4 shadow-md text-center"
                   style={{
                     background: "rgba(255,255,255,.65)",

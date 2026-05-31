@@ -80,6 +80,14 @@ export default function UranaiClient() {
     });
   }, []);
 
+  // LPの「1枚/3枚」カードからの遷移時、展開モードを引き継ぐ（?spread=three|single）
+  useEffect(() => {
+    const spread = new URLSearchParams(window.location.search).get("spread");
+    if (spread === "three" || spread === "single") {
+      setSpreadMode(spread);
+    }
+  }, []);
+
   const handleThemeSelect = (themeId: string) => {
     setSelectedTheme(themeId);
   };
