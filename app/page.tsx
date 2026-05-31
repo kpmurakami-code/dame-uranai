@@ -55,6 +55,10 @@ export default function Home() {
           />
 
           <div className="mx-auto max-w-5xl">
+            {/* SEO用の見出し（視覚はバナー画像が担うため sr-only） */}
+            <h1 className="sr-only">
+              ダメ占い｜ダメ天使＆ダメ悪魔の本音占い — 無料で遊べるタロット占い・数秘術・相性占い
+            </h1>
             <div
               className="relative rounded-[2.2rem] overflow-hidden shadow-[0_22px_60px_-20px_rgba(200,77,209,.45)]"
               style={{ border: "3px solid #fff" }}
