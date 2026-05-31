@@ -64,7 +64,7 @@ export default function Home() {
               style={{ border: "3px solid #fff" }}
             >
               <Image
-                src="/images/lp/hero/og.png"
+                src="/images/lp/hero/og-v2.png"
                 alt="ダメ占い｜ダメかわ天使＆悪魔の本音占い"
                 width={1731}
                 height={909}
