@@ -7,7 +7,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dame-uranai.com";
 const siteName = "ダメ占い";
 const title = "ダメ占い｜ダメ天使＆ダメ悪魔の本音占い";
 const description =
-  "“ダメ”なのは、かわいさのこと。ダメ天使＆ダメ悪魔のゆるかわコンビが、AIであなたを本音占い。甘い天使は褒めて、毒舌悪魔はズバッと。くすっと笑えて、でも本気で当たる。タロット・数秘術が登録なしで無料。";
+  "“ダメ”なのは、かわいさのこと。ダメ天使＆ダメ悪魔のゆるかわコンビが、AIであなたを本音占い。ほめ上手な天使は褒めて、毒舌な悪魔はズバッと。くすっと笑えて、でも本気で当たる。タロット・数秘術が登録なしで無料。";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

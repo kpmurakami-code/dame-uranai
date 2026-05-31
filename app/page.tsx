@@ -65,7 +65,7 @@ export default function Home() {
             >
               <Image
                 src="/images/lp/hero/og.png"
-                alt="ダメ占い — 甘い天使と毒舌悪魔の本音占い"
+                alt="ダメ占い｜ダメかわ天使＆悪魔の本音占い"
                 width={1731}
                 height={909}
                 priority
