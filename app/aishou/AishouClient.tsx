@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import Header from "@/components/Header";
 import ShareButtons from "@/components/ShareButtons";
+import { SITE_URL } from "@/lib/site";
 import PremiumInterestButton from "@/components/PremiumInterestButton";
 import { analytics } from "@/lib/analytics";
 import {
@@ -158,7 +159,7 @@ export default function AishouClient() {
   const showResult = result !== null;
 
   const tweetText = result
-    ? `わたしと${displayNames.b || "あの人"}の相性は${result.score}%でした💞 ダメ天使＆ダメ悪魔が占う相性占い、あなたもやってみて！ #ダメ占い`
+    ? `わたしと${displayNames.b || "あの人"}の相性、${result.score}%だって💞 ダメ天使＆ダメ悪魔が本音でジャッジ👼😈 あなたの“あの人”との相性は…？ #ダメ占い`
     : "";
 
   // 円ゲージ用
@@ -649,6 +650,7 @@ export default function AishouClient() {
             <ShareButtons
               shareCardId="aishou-share-card"
               tweetText={tweetText}
+              shareUrl={`${SITE_URL}/aishou`}
               filename="aishou-result.png"
               source="aishou"
             />

@@ -9,6 +9,7 @@ import { getLifePathColor } from "@/lib/numerologyColors";
 import PaywallModal from "@/components/PaywallModal";
 import Header from "@/components/Header";
 import ShareButtons from "@/components/ShareButtons";
+import { SITE_URL } from "@/lib/site";
 import { analytics } from "@/lib/analytics";
 
 interface NumerologyResult {
@@ -218,7 +219,7 @@ export default function SujimeiClient() {
 
   // X シェア用テキスト
   const tweetText = result
-    ? `【数秘術占い】ライフパスナンバー${lifePathNumber}｜${result.summary.slice(0, 40)}… #ダメ占い`
+    ? `わたしのライフパスナンバーは${lifePathNumber}🔢 ダメ天使＆ダメ悪魔の数秘術占い、なんだか当たってる…👀 あなたの数字は？ #ダメ占い`
     : "";
 
   // マイカラー（result があるとき）
@@ -729,6 +730,7 @@ export default function SujimeiClient() {
                 <ShareButtons
                   shareCardId="share-card"
                   tweetText={tweetText}
+                  shareUrl={`${SITE_URL}/sujimei`}
                   filename="numerology-result.png"
                   source="numerology"
                 />

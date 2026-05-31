@@ -38,8 +38,8 @@ export const analytics = {
   compatShare: (method: "image" | "x") =>
     emit("compat_share", { service: "compatibility", method }),
 
-  // シェア（source: "tarot" | "numerology" | "aishou" / method: "image" | "x"）
-  shareClick: (source: string, method: "image" | "x") =>
+  // シェア（source: "tarot" | "numerology" | "aishou" / method: ネイティブ共有/画像保存/X/LINE）
+  shareClick: (source: string, method: "native" | "image" | "x" | "line") =>
     emit("share_click", { source, method }),
 
   // ログイン開始（Google OAuth へ遷移する直前）

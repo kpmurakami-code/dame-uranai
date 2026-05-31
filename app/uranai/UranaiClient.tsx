@@ -13,6 +13,7 @@ import { saveFortune } from "@/lib/saveFortune";
 import PaywallModal from "@/components/PaywallModal";
 import Header from "@/components/Header";
 import ShareButtons from "@/components/ShareButtons";
+import { SITE_URL } from "@/lib/site";
 import PremiumInterestButton from "@/components/PremiumInterestButton";
 import { analytics } from "@/lib/analytics";
 
@@ -240,7 +241,7 @@ export default function UranaiClient() {
 
   // X シェア用テキスト（結論 verdict を要約）
   const tweetText = fortune
-    ? `【タロット占い】${selectedThemeLabel}｜${getVerdict(fortune).slice(0, 40)}… #ダメ占い`
+    ? `ダメ天使＆ダメ悪魔にタロットで「${selectedThemeLabel}」を占ってもらった🔮 ほめ上手な天使と毒舌悪魔の本音占い、あなたも👼😈 #ダメ占い`
     : "";
 
   return (
@@ -913,6 +914,7 @@ export default function UranaiClient() {
                 <ShareButtons
                   shareCardId="share-card"
                   tweetText={tweetText}
+                  shareUrl={`${SITE_URL}/uranai`}
                   filename={`tarot-${selectedTheme}.png`}
                   source="tarot"
                 />
