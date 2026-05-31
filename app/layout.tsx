@@ -22,9 +22,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/og.png",
-        width: 1731,
-        height: 909,
+        url: "/images/og-card.jpg",
+        width: 1200,
+        height: 630,
         alt: "ダメ占い - ダメ天使＆ダメ悪魔の本音占い",
       },
     ],
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/images/og.png"],
+    images: ["/images/og-card.jpg"],
   },
 };
 

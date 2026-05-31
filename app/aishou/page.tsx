@@ -12,13 +12,13 @@ export const metadata = {
     title,
     description,
     url: `${SITE_URL}/aishou`,
-    images: ["/images/og.png"],
+    images: ["/images/og-card.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: ["/images/og.png"],
+    images: ["/images/og-card.jpg"],
   },
 };
 
