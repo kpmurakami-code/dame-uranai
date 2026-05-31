@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { analytics } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/site";
 
@@ -22,6 +22,8 @@ export default function ShareButtons({
   const [isGenerating, setIsGenerating] = useState(false);
   // Web Share API（画像付き）対応かどうか。SSRと初期描画はfalse→マウント後に判定（hydration不一致回避）。
   const [canNativeShare, setCanNativeShare] = useState(false);
+  // 生成済みのシェア画像をキャッシュ（クリック時はawaitなしでshareを呼ぶ＝ユーザー操作権を保持）
+  const fileRef = useRef<File | null>(null);
 
   useEffect(() => {
     setCanNativeShare(
@@ -49,52 +51,84 @@ export default function ShareButtons({
     return new File([blob], filename, { type: "image/png" });
   }, [shareCardId, filename]);
 
-  // ① ワンタップ共有（Web Share API・画像付き）→ LINE / Instagram / X など共有シートへ
-  const handleNativeShare = useCallback(async () => {
-    setIsGenerating(true);
-    try {
-      const file = await generateImageFile();
-      if (file && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], text: textWithUrl });
-        analytics.shareClick(source, "native");
-      } else if (navigator.share) {
-        // 画像が共有できない環境はテキスト＋URLのみ共有
-        await navigator.share({ text: textWithUrl });
-        analytics.shareClick(source, "native");
+  // 結果表示時にシェア画像を先に生成してキャッシュしておく。
+  // → クリック時に重い html2canvas を待たずに済むので navigator.share の
+  //   「ユーザー操作直後」判定（user activation）が切れず、確実に共有シートが開く（特にiOS）。
+  // tweetText（結果内容）が変わったら作り直す。
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const f = await generateImageFile();
+        if (active) fileRef.current = f;
+      } catch {
+        if (active) fileRef.current = null;
       }
-    } catch (err) {
-      // ユーザーがキャンセル（AbortError）した場合などは無視
-      if ((err as Error)?.name !== "AbortError") {
-        console.error("共有エラー:", err);
-      }
-    } finally {
-      setIsGenerating(false);
-    }
-  }, [generateImageFile, textWithUrl, source]);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [generateImageFile, tweetText]);
 
-  // ② 画像を保存（IGストーリーズ等への手動投稿・PCフォールバック用）
-  const handleDownload = useCallback(async () => {
-    setIsGenerating(true);
-    try {
-      const file = await generateImageFile();
-      if (!file) {
-        alert("シェア用カードが見つからなかったよ〜");
-        return;
-      }
+  // 画像ファイルをダウンロード
+  const triggerDownload = useCallback(
+    (file: File) => {
       const url = URL.createObjectURL(file);
       const link = document.createElement("a");
       link.href = url;
       link.download = filename;
       link.click();
       URL.revokeObjectURL(url);
+    },
+    [filename]
+  );
+
+  // 画像保存（キャッシュ優先・なければその場で生成）
+  const downloadImage = useCallback(async () => {
+    setIsGenerating(true);
+    try {
+      const file = fileRef.current ?? (await generateImageFile());
+      if (!file) {
+        alert("シェア用カードが見つからなかったよ〜");
+        return false;
+      }
+      triggerDownload(file);
       analytics.shareClick(source, "image");
+      return true;
     } catch (err) {
       console.error("画像生成エラー:", err);
       alert("画像の生成に失敗しちゃったよ〜💦 もう一度試してね！");
+      return false;
     } finally {
       setIsGenerating(false);
     }
-  }, [generateImageFile, filename, source]);
+  }, [generateImageFile, triggerDownload, source]);
+
+  // ① ワンタップ共有（Web Share API・画像付き）→ LINE / Instagram / X など共有シートへ。
+  //    失敗・非対応時は必ず画像保存にフォールバック（無反応を防ぐ）。
+  const handleNativeShare = useCallback(async () => {
+    const file = fileRef.current;
+    try {
+      if (file && navigator.canShare?.({ files: [file] })) {
+        // キャッシュ済みファイルを使うので await を挟まず即共有＝操作権を保持
+        await navigator.share({ files: [file], text: textWithUrl });
+        analytics.shareClick(source, "native");
+        return;
+      }
+      if (navigator.share) {
+        // 画像共有が使えない環境はテキスト＋URLのみ共有
+        await navigator.share({ text: textWithUrl });
+        analytics.shareClick(source, "native");
+        return;
+      }
+    } catch (err) {
+      // ユーザーが共有シートを閉じた（AbortError）＝正常。何もしない。
+      if ((err as Error)?.name === "AbortError") return;
+      // それ以外の失敗（操作権切れ・OS側エラー等）は画像保存にフォールバック
+    }
+    // 共有が使えない／失敗した → 画像保存にフォールバックして必ず反応を返す
+    await downloadImage();
+  }, [textWithUrl, source, downloadImage]);
 
   // ③ X（テキスト＋URL＝リンクプレビューが出る）
   const handleTweet = useCallback(() => {
@@ -134,7 +168,7 @@ export default function ShareButtons({
       {/* ②③④ 個別の共有先 */}
       <div className="grid grid-cols-3 gap-2">
         <button
-          onClick={handleDownload}
+          onClick={downloadImage}
           disabled={isGenerating}
           className="py-3 px-2 rounded-full text-white text-xs font-bold text-center shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-105 active:scale-95"
           style={{ background: "linear-gradient(135deg, #ff9ec4, #c64dd1)" }}
